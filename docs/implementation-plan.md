@@ -1,148 +1,36 @@
 # Implementation Plan
 
-## Project Timeline Overview
-
-**Total Duration**: 32 weeks (8 months)
-**Team Size**: 3-5 developers
-**Development Phases**: 5 phases with clear milestones
-
-## Phase 1: Foundation (Weeks 1-4)
-
-### Week 1: Project Setup and Architecture
-**Goal**: Establish project foundation and core architecture
-
-#### Tasks:
-- [ ] **Project Repository Setup**
-  - Initialize Git repository with proper branching strategy
-  - Set up CI/CD pipeline (GitHub Actions)
-  - Configure code quality tools (clang-format, clang-tidy)
-  - Set up documentation generation (Doxygen)
-
-- [ ] **Build System Configuration**
-  - Create CMake build system
-  - Set up platform-specific build configurations
-  - Configure dependency management
-  - Set up testing framework (Google Test)
-
-- [ ] **Core Architecture Design**
-  - Design ECS system architecture
-  - Define core interfaces and abstractions
-  - Create platform abstraction layer
-  - Design event system
-
-#### Deliverables:
-- Working build system for all target platforms
-- Core architecture documentation
-- Basic project structure with placeholder files
-- CI/CD pipeline with automated testing
-
-### Week 2: Core Engine Development
-**Goal**: Implement core engine systems
-
-#### Tasks:
-- [ ] **Entity Component System**
-  - Implement EntityManager class
-  - Create base Component class
-  - Implement component storage and querying
-  - Add entity lifecycle management
-
-- [ ] **Memory Management**
-  - Implement object pools for frequently allocated objects
-  - Create memory arenas for temporary allocations
-  - Add memory profiling and leak detection
-  - Implement RAII resource management
-
-- [ ] **Event System**
-  - Design event queue and dispatcher
-  - Implement event types and handlers
-  - Add event filtering and prioritization
-  - Create event debugging tools
-
-#### Deliverables:
-- Functional ECS system with basic components
-- Memory management system with profiling
-- Event system with debugging capabilities
-- Unit tests for all core systems
-
-### Week 3: Platform Abstraction Layer
-**Goal**: Create platform-independent interfaces
-
-#### Tasks:
-- [ ] **Graphics API Abstraction**
-  - Define IGraphicsAPI interface
-  - Implement OpenGL renderer
-  - Add Vulkan renderer (optional)
-  - Create shader management system
-
-- [ ] **Audio API Abstraction**
-  - Define IAudioAPI interface
-  - Implement OpenAL audio system
-  - Add Web Audio API support
-  - Create audio resource management
-
-- [ ] **Input API Abstraction**
-  - Define IInputAPI interface
-  - Implement SDL2 input system
-  - Add GLFW input system
-  - Create input mapping system
-
-#### Deliverables:
-- Platform abstraction layer with multiple backends
-- Cross-platform graphics, audio, and input systems
-- Configuration system for API selection
-- Integration tests for platform systems
-
-### Week 4: Basic Rendering Pipeline
-**Goal**: Implement fundamental rendering capabilities
-
-#### Tasks:
-- [ ] **Vector Graphics System**
-  - Implement VectorRenderer class
-  - Create vector command processing
-  - Add basic vector drawing primitives
-  - Implement character rendering system
-
-- [ ] **Shader System**
-  - Create shader compilation and management
-  - Implement basic vertex and fragment shaders
-  - Add shader uniform management
-  - Create shader debugging tools
-
-- [ ] **Basic Rendering Pipeline**
-  - Implement render command batching
-  - Add viewport and camera management
-  - Create basic scene graph
-  - Implement render state management
-
-#### Deliverables:
-- Working vector graphics rendering system
-- Shader compilation and management system
-- Basic rendering pipeline with command batching
-- Visual test suite for rendering features
+**Progress Summary (as of July 8, 2025):**
+- Core engine, ECS, and event system implemented and tested
+- Player system, tube geometry, and movement: **Complete**
+- Enemy system (all types, AI, spawning): **Complete**
+- Weapon, projectile, and collision systems: **Complete**
+- All core gameplay systems validated by comprehensive tests
+- Next: Game state management, level system, advanced rendering
 
 ## Phase 2: Core Gameplay (Weeks 5-12)
 
 ### Week 5-6: Player System
-**Goal**: Implement player character and controls
+**Goal**: Implement player character and controls based on original game
 
 #### Tasks:
-- [ ] **Player Entity**
-  - Create Player component
-  - Implement player movement system
-  - Add player state management
-  - Create player input handling
+- [x] **Player Entity**
+  - [x] Create Player component based on RAM 0200-0202
+  - [x] Implement player movement system
+  - [x] Add player state management
+  - [x] Create player input handling
 
-- [ ] **Tube Geometry System**
-  - Implement 3D tube geometry
-  - Create segment-based positioning
-  - Add perspective and scaling
-  - Implement tube collision detection
+- [x] **Tube Geometry System**
+  - [x] Implement 3D tube geometry with 16 segments
+  - [x] Create segment-based positioning
+  - [x] Add perspective and scaling
+  - [x] Implement tube collision detection
 
-- [ ] **Player Controls**
-  - Implement keyboard input handling
-  - Add gamepad support
-  - Create input mapping system
-  - Add control sensitivity settings
+- [x] **Player Controls**
+  - [x] Implement keyboard input handling
+  - [x] Add gamepad support
+  - [x] Create input mapping system
+  - [x] Add control sensitivity settings
 
 #### Deliverables:
 - Functional player character with movement
@@ -151,27 +39,27 @@
 - Player movement and collision tests
 
 ### Week 7-8: Enemy System
-**Goal**: Implement enemy entities and basic AI
+**Goal**: Implement enemy entities and basic AI based on original game
 
 #### Tasks:
-- [ ] **Enemy Components**
-  - Create Enemy component with types
-  - Implement enemy movement system
-  - Add enemy state management
-  - Create enemy spawning system
+- [x] **Enemy Components**
+  - [x] Create Enemy component with types (1=Flipper, 2=Pulsar, 3=Tanker, 4=Spiker, 5=Fuzzball)
+  - [x] Implement enemy movement system
+  - [x] Add enemy state management
+  - [x] Create enemy spawning system
 
-- [ ] **Basic AI System**
-  - Implement AISystem class
-  - Create enemy behavior patterns
-  - Add pathfinding for tube movement
-  - Implement enemy decision making
+- [x] **Basic AI System**
+  - [x] Implement AISystem class
+  - [x] Create enemy behavior patterns
+  - [x] Add pathfinding for tube movement
+  - [x] Implement enemy decision making
 
-- [ ] **Enemy Types Implementation**
-  - Implement Flipper enemy behavior
-  - Add Pulsar enemy behavior
-  - Create Tanker enemy behavior
-  - Add Spiker enemy behavior
-  - Implement Fuzzball enemy behavior
+- [x] **Enemy Types Implementation**
+  - [x] Implement Flipper enemy behavior (Type 1)
+  - [x] Add Pulsar enemy behavior (Type 2)
+  - [x] Create Tanker enemy behavior (Type 3)
+  - [x] Add Spiker enemy behavior (Type 4)
+  - [x] Implement Fuzzball enemy behavior (Type 5)
 
 #### Deliverables:
 - Complete enemy system with all types
@@ -183,455 +71,395 @@
 **Goal**: Implement player weapons and combat mechanics
 
 #### Tasks:
-- [ ] **Weapon System**
-  - Implement Zap weapon (close range)
-  - Add Fire weapon (long range)
-  - Create projectile system
-  - Add weapon cooldown and energy management
+- [x] **Weapon System**
+  - [x] Implement Zap weapon (close range)
+  - [x] Add Fire weapon (long range)
+  - [x] Create projectile system
+  - [x] Add weapon cooldown and energy management
 
-- [ ] **Combat Mechanics**
-  - Implement collision detection system
-  - Add damage and health system
-  - Create explosion effects
-  - Implement score system
+- [x] **Combat Mechanics**
+  - [x] Implement collision detection system
+  - [x] Add damage and health system
+  - [x] Create explosion effects
+  - [x] Implement score system
 
-- [ ] **Enemy Combat**
-  - Add enemy shooting mechanics
-  - Implement enemy projectile system
-  - Create enemy attack patterns
-  - Add enemy death animations
+- [x] **Enemy Combat**
+  - [x] Add enemy shooting mechanics
+  - [x] Implement enemy projectile system
+  - [x] Create enemy AI combat behavior
+  - [x] Add enemy death sequences
 
 #### Deliverables:
-- Complete weapon system with both weapons
+- Complete weapon system with Zap and Fire
 - Combat mechanics with collision detection
-- Enemy combat capabilities
-- Combat system tests and balance validation
+- Enemy combat system
+- Weapon and combat tests
 
 ### Week 11-12: Game State Management
-**Goal**: Implement game flow and state management
+**Goal**: Implement game state system based on original game
 
 #### Tasks:
 - [ ] **Game State System**
-  - Implement GameStateManager
-  - Create all game states (menu, playing, pause, etc.)
-  - Add state transition logic
+  - Implement GameStateManager based on RAM 0000
+  - Create state transitions (0x00=startup, 0x04=playing, etc.)
+  - Add state-specific behavior
   - Implement state persistence
 
-- [ ] **Level Management**
-  - Create LevelManager class
-  - Implement level progression
+- [ ] **Level System**
+  - Create LevelManager for level progression
+  - Implement level selection system
   - Add difficulty scaling
-  - Create level data system
+  - Create level completion logic
 
-- [ ] **Game Flow**
-  - Implement main game loop
-  - Add pause and resume functionality
-  - Create game over handling
-  - Implement level completion logic
+- [ ] **Score System**
+  - Implement score tracking based on RAM 0040-0045
+  - Add high score system
+  - Create score display
+  - Implement score persistence
 
 #### Deliverables:
 - Complete game state management system
-- Level progression and difficulty system
-- Full game flow implementation
-- Game state and level management tests
+- Level progression system
+- Score and high score system
+- Game state tests and validation
 
 ## Phase 3: Graphics & Effects (Weeks 13-20)
 
 ### Week 13-14: Advanced Vector Graphics
-**Goal**: Enhance vector graphics rendering
+**Goal**: Implement advanced vector graphics rendering
 
 #### Tasks:
-- [ ] **Advanced Vector Rendering**
-  - Implement anti-aliasing for vector graphics
-  - Add line thickness and style support
-  - Create vector animation system
-  - Implement vector caching and optimization
+- [ ] **Vector Command System**
+  - Implement vector command processing
+  - Create command batching system
+  - Add vector command optimization
+  - Implement command caching
 
-- [ ] **Tube Rendering Enhancements**
-  - Add tube texture and material system
-  - Implement dynamic tube geometry
-  - Create tube lighting effects
-  - Add tube depth and perspective effects
+- [ ] **Tube Rendering**
+  - Create 3D tube rendering system
+  - Implement perspective projection
+  - Add depth-based scaling
+  - Create tube segment rendering
 
-- [ ] **Character and UI Rendering**
-  - Enhance character rendering system
-  - Implement UI text rendering
-  - Add score and HUD rendering
-  - Create menu rendering system
+- [ ] **Character Rendering**
+  - Implement character vector graphics
+  - Create text rendering system
+  - Add number rendering
+  - Implement UI element rendering
 
 #### Deliverables:
-- Enhanced vector graphics with anti-aliasing
-- Advanced tube rendering with effects
-- Complete UI and text rendering system
-- Performance optimized vector rendering
+- Advanced vector graphics system
+- 3D tube rendering with perspective
+- Character and text rendering
+- Vector graphics performance tests
 
-### Week 15-16: Particle System
-**Goal**: Implement particle effects and explosions
+### Week 15-16: Particle System and Effects
+**Goal**: Implement particle effects and visual enhancements
 
 #### Tasks:
-- [ ] **Particle System Core**
-  - Implement ParticleSystem class
-  - Create particle physics simulation
-  - Add particle lifecycle management
-  - Implement particle rendering
+- [ ] **Particle System**
+  - Create ParticleSystem class
+  - Implement particle physics
+  - Add particle rendering
+  - Create particle effects
 
 - [ ] **Explosion Effects**
-  - Create explosion particle effects
-  - Add enemy death explosions
-  - Implement player death effects
-  - Create level completion effects
+  - Implement enemy explosion effects
+  - Create player death effects
+  - Add weapon impact effects
+  - Implement screen shake effects
 
-- [ ] **Environmental Effects**
-  - Add weapon fire effects
-  - Implement enemy movement trails
-  - Create background particle effects
-  - Add screen shake and camera effects
+- [ ] **Visual Enhancements**
+  - Add post-processing effects
+  - Implement screen transitions
+  - Create visual feedback systems
+  - Add performance monitoring
 
 #### Deliverables:
-- Complete particle system with physics
-- Various explosion and effect types
-- Environmental particle effects
-- Particle system performance optimization
+- Complete particle system
+- Explosion and visual effects
+- Screen transitions and effects
+- Visual effects performance tests
 
-### Week 17-18: Screen Effects and Transitions
-**Goal**: Implement visual effects and transitions
+### Week 17-18: UI and HUD System
+**Goal**: Implement user interface and heads-up display
 
 #### Tasks:
-- [ ] **Screen Effects**
-  - Implement screen flash effects
-  - Add color grading and post-processing
-  - Create bloom and glow effects
-  - Add motion blur and depth of field
+- [ ] **HUD System**
+  - Create HUD rendering system
+  - Implement score display
+  - Add lives indicator
+  - Create level display
 
-- [ ] **Transition Effects**
-  - Create level transition effects
-  - Implement fade in/out effects
-  - Add screen wipe transitions
-  - Create zoom and camera effects
+- [ ] **Menu System**
+  - Implement main menu
+  - Create pause menu
+  - Add options menu
+  - Create high score menu
 
-- [ ] **Visual Polish**
-  - Add screen shake effects
-  - Implement color cycling effects
-  - Create scanline and CRT effects
-  - Add visual feedback for player actions
+- [ ] **UI Components**
+  - Create button system
+  - Implement text input
+  - Add slider controls
+  - Create menu navigation
 
 #### Deliverables:
-- Complete screen effects system
-- Smooth transition effects between states
-- Visual polish and feedback effects
-- Configurable visual effects system
+- Complete HUD system
+- Menu system with navigation
+- UI components and controls
+- UI responsiveness tests
 
 ### Week 19-20: Performance Optimization
-**Goal**: Optimize graphics performance
+**Goal**: Optimize graphics and rendering performance
 
 #### Tasks:
 - [ ] **Rendering Optimization**
-  - Implement frustum culling
-  - Add level-of-detail system
-  - Create render command batching
-  - Optimize shader performance
+  - Implement render command batching
+  - Add frustum culling
+  - Create level-of-detail system
+  - Optimize shader usage
 
 - [ ] **Memory Optimization**
-  - Implement texture and resource caching
-  - Add memory pooling for particles
-  - Create efficient data structures
-  - Optimize memory allocation patterns
+  - Implement object pooling
+  - Add memory profiling
+  - Create memory optimization
+  - Implement garbage collection
 
-- [ ] **GPU Optimization**
-  - Implement instanced rendering
-  - Add GPU compute shaders for particles
-  - Create efficient vertex buffer management
-  - Optimize draw call batching
+- [ ] **Performance Monitoring**
+  - Add frame rate monitoring
+  - Implement performance metrics
+  - Create performance debugging tools
+  - Add performance profiling
 
 #### Deliverables:
 - Optimized rendering pipeline
-- Memory efficient graphics system
-- GPU optimized particle and effects
-- Performance benchmarks and profiling tools
+- Memory optimization system
+- Performance monitoring tools
+- Performance benchmarks
 
 ## Phase 4: Audio & Polish (Weeks 21-28)
 
 ### Week 21-22: Audio System Implementation
-**Goal**: Implement complete audio system
+**Goal**: Implement audio system based on POKEY chip recreation
 
 #### Tasks:
-- [ ] **POKEY Sound Synthesis**
-  - Implement POKEYSynthesizer class
-  - Create waveform generation (square, sawtooth, triangle, noise)
-  - Add frequency and volume control
-  - Implement polyphony and channel management
+- [ ] **POKEY Chip Recreation**
+  - Implement POKEY synthesizer
+  - Create 4-channel audio system
+  - Add waveform generation
+  - Implement audio synthesis
 
-- [ ] **Sound Effect System**
-  - Create sound effect management
+- [ ] **Sound Effects**
   - Implement weapon sound effects
-  - Add explosion and impact sounds
-  - Create UI and menu sounds
+  - Create explosion sounds
+  - Add UI sound effects
+  - Implement ambient sounds
 
-- [ ] **Music System**
-  - Implement background music system
-  - Add level-specific music themes
-  - Create dynamic music mixing
-  - Implement music transitions
-
-#### Deliverables:
-- Complete POKEY sound synthesis system
-- Comprehensive sound effect library
-- Background music system with themes
-- Audio system configuration and testing
-
-### Week 23-24: UI/UX Implementation
-**Goal**: Implement user interface and experience
-
-#### Tasks:
-- [ ] **Menu System**
-  - Create main menu interface
-  - Implement options and settings menu
-  - Add high score display
-  - Create pause and game over menus
-
-- [ ] **HUD System**
-  - Implement score display
-  - Add lives indicator
-  - Create level display
-  - Add weapon status indicators
-
-- [ ] **Input Configuration**
-  - Create key binding interface
-  - Implement gamepad configuration
-  - Add sensitivity settings
-  - Create input testing interface
+- [ ] **Audio Management**
+  - Create AudioManager class
+  - Implement audio resource management
+  - Add volume controls
+  - Create audio configuration
 
 #### Deliverables:
-- Complete menu system with navigation
-- Functional HUD with all game information
-- Configurable input system
-- User-friendly interface design
+- POKEY chip recreation
+- Complete sound effect system
+- Audio management system
+- Audio quality tests
 
-### Week 25-26: Game Balance and Polish
-**Goal**: Balance gameplay and add polish
+### Week 23-24: Game Balance and Polish
+**Goal**: Balance gameplay and add polish features
 
 #### Tasks:
 - [ ] **Game Balance**
-  - Balance enemy spawning and difficulty
-  - Adjust weapon effectiveness and timing
-  - Fine-tune player movement and controls
-  - Balance scoring and progression
+  - Balance enemy spawning rates
+  - Adjust weapon effectiveness
+  - Fine-tune difficulty progression
+  - Balance scoring system
+
+- [ ] **Visual Polish**
+  - Add screen effects
+  - Implement smooth transitions
+  - Create visual feedback
+  - Add animation polish
 
 - [ ] **Game Feel**
-  - Add screen shake and feedback
-  - Implement smooth camera movement
-  - Create satisfying visual and audio feedback
-  - Add haptic feedback (where supported)
-
-- [ ] **Accessibility Features**
-  - Add color blind support
-  - Implement adjustable difficulty
-  - Create customizable controls
-  - Add visual and audio accessibility options
+  - Implement responsive controls
+  - Add haptic feedback
+  - Create satisfying effects
+  - Polish user experience
 
 #### Deliverables:
-- Balanced and polished gameplay
-- Enhanced game feel and feedback
-- Accessibility features for diverse players
-- Comprehensive playtesting and iteration
+- Balanced gameplay mechanics
+- Polished visual effects
+- Responsive game feel
+- Gameplay balance tests
 
-### Week 27-28: Performance Optimization
-**Goal**: Final performance optimization and polish
+### Week 25-26: Accessibility and Options
+**Goal**: Implement accessibility features and configuration options
 
 #### Tasks:
-- [ ] **System Optimization**
-  - Optimize game loop performance
-  - Improve memory usage and allocation
-  - Enhance CPU and GPU utilization
-  - Optimize audio processing
+- [ ] **Accessibility Features**
+  - Add color blind support
+  - Implement high contrast mode
+  - Create customizable controls
+  - Add audio accessibility
 
-- [ ] **Platform Optimization**
-  - Optimize for target platforms
-  - Implement platform-specific optimizations
-  - Add adaptive quality settings
-  - Create performance monitoring tools
+- [ ] **Configuration System**
+  - Implement settings menu
+  - Create configuration persistence
+  - Add graphics options
+  - Create audio settings
 
-- [ ] **Final Polish**
-  - Fix bugs and edge cases
-  - Improve error handling and recovery
-  - Add comprehensive logging
-  - Create debugging and diagnostic tools
+- [ ] **Input Customization**
+  - Implement key rebinding
+  - Add gamepad configuration
+  - Create input sensitivity options
+  - Add accessibility controls
 
 #### Deliverables:
-- Optimized performance across all platforms
-- Robust error handling and recovery
-- Comprehensive debugging tools
-- Final polished game experience
+- Complete accessibility features
+- Configuration system
+- Input customization
+- Accessibility testing
+
+### Week 27-28: Final Polish and Testing
+**Goal**: Final polish and comprehensive testing
+
+#### Tasks:
+- [ ] **Bug Fixes**
+  - Fix identified bugs
+  - Address performance issues
+  - Resolve compatibility problems
+  - Fix user experience issues
+
+- [ ] **Final Polish**
+  - Add final visual effects
+  - Implement last-minute features
+  - Create launch sequence
+  - Add final touches
+
+- [ ] **Comprehensive Testing**
+  - Perform full game testing
+  - Test all platforms
+  - Validate performance
+  - Conduct user testing
+
+#### Deliverables:
+- Bug-free game release
+- Polished final product
+- Comprehensive test results
+- Release-ready build
 
 ## Phase 5: Testing & Release (Weeks 29-32)
 
-### Week 29-30: Comprehensive Testing
-**Goal**: Thorough testing and quality assurance
+### Week 29-30: Platform Testing and Optimization
+**Goal**: Test and optimize for all target platforms
 
 #### Tasks:
-- [ ] **Unit Testing**
-  - Complete unit test coverage
-  - Test all core systems and components
-  - Validate edge cases and error conditions
-  - Performance testing of critical systems
-
-- [ ] **Integration Testing**
-  - Test system interactions
-  - Validate data flow between components
-  - Test platform-specific functionality
-  - Performance integration testing
-
-- [ ] **User Testing**
-  - Conduct playtesting sessions
-  - Gather feedback and iterate
-  - Test accessibility features
-  - Validate user experience
-
-#### Deliverables:
-- Comprehensive test suite with high coverage
-- Integration test results and validation
-- User testing feedback and improvements
-- Quality assurance documentation
-
-### Week 31: Platform-Specific Builds
-**Goal**: Create release builds for all platforms
-
-#### Tasks:
-- [ ] **Build System Finalization**
-  - Create release build configurations
-  - Implement code signing and security
-  - Add installer and packaging
-  - Create distribution packages
-
 - [ ] **Platform Testing**
-  - Test on all target platforms
-  - Validate platform-specific features
-  - Performance testing on target hardware
-  - Compatibility testing
+  - Test Windows compatibility
+  - Test macOS compatibility
+  - Test Linux compatibility
+  - Test web browser compatibility
 
-- [ ] **Documentation Completion**
-  - Complete API documentation
-  - Create user manual and guides
-  - Add developer documentation
-  - Create release notes
+- [ ] **Performance Optimization**
+  - Optimize for each platform
+  - Address platform-specific issues
+  - Implement platform-specific features
+  - Create platform-specific builds
+
+- [ ] **Compatibility Testing**
+  - Test with different hardware
+  - Validate driver compatibility
+  - Test with different input devices
+  - Verify audio compatibility
 
 #### Deliverables:
-- Release builds for all platforms
-- Complete documentation suite
-- Platform compatibility validation
-- Distribution packages and installers
+- Platform-tested builds
+- Optimized performance
+- Platform-specific features
+- Compatibility validation
 
-### Week 32: Release Preparation
-**Goal**: Final release preparation and deployment
+### Week 31-32: Release Preparation
+**Goal**: Prepare for final release
 
 #### Tasks:
 - [ ] **Release Preparation**
-  - Final bug fixes and polish
-  - Create release candidate builds
-  - Prepare marketing materials
-  - Set up distribution channels
+  - Create release builds
+  - Prepare distribution packages
+  - Create installation scripts
+  - Prepare documentation
 
-- [ ] **Deployment**
+- [ ] **Final Testing**
+  - Conduct final testing
+  - Validate all features
+  - Test installation process
+  - Verify distribution
+
+- [ ] **Release Deployment**
   - Deploy to distribution platforms
-  - Set up update mechanisms
-  - Create backup and recovery procedures
-  - Prepare support infrastructure
-
-- [ ] **Post-Release Planning**
-  - Plan post-release support
-  - Prepare update roadmap
-  - Create community engagement plan
-  - Plan future enhancements
+  - Create release notes
+  - Prepare marketing materials
+  - Launch release
 
 #### Deliverables:
-- Final release version
-- Complete deployment infrastructure
-- Post-release support plan
-- Future development roadmap
+- Release-ready builds
+- Distribution packages
+- Complete documentation
+- Successful release
 
-## Risk Management
+## Key Implementation Notes
 
-### Technical Risks
-- **Graphics Performance**: Risk of not meeting 60 FPS target
-  - *Mitigation*: Early performance testing, optimization planning
-- **Platform Compatibility**: Risk of platform-specific issues
-  - *Mitigation*: Continuous integration testing, early platform testing
-- **Audio Synthesis**: Risk of POKEY recreation complexity
-  - *Mitigation*: Prototype early, use reference implementations
+### Memory Layout Implementation
+Based on the ASM analysis, implement the following memory structures:
 
-### Schedule Risks
-- **Scope Creep**: Risk of adding features beyond scope
-  - *Mitigation*: Strict feature freeze, change control process
-- **Team Availability**: Risk of team member unavailability
-  - *Mitigation*: Cross-training, documentation, backup plans
-- **Dependency Issues**: Risk of third-party library problems
-  - *Mitigation*: Multiple dependency options, early testing
+```cpp
+// Game State (RAM 0000-009F)
+struct GameState {
+    uint8_t gamestate;        // Main game state
+    uint8_t timectr;          // Time counter
+    uint8_t player_control;   // Player input mode
+    uint8_t credits;          // Game credits
+    uint8_t zap_fire_shadow;  // Control shadow
+    // ... additional fields
+};
 
-### Quality Risks
-- **Game Balance**: Risk of unbalanced gameplay
-  - *Mitigation*: Early playtesting, iterative balance process
-- **Bug Density**: Risk of high bug count at release
-  - *Mitigation*: Comprehensive testing, code review process
-- **User Experience**: Risk of poor user experience
-  - *Mitigation*: User testing, accessibility considerations
+// Input System (RAM 004C-0051)
+struct InputState {
+    uint8_t zap_fire_tmp1;    // Current button state
+    uint8_t zap_fire_debounce; // Debounced buttons
+    uint8_t zap_fire_new;     // New button presses
+    uint8_t spinner_change;   // Spinner movement
+    uint8_t player_position;  // Player position
+};
 
-## Success Metrics
+// Enemy System (RAM 0108-0146)
+struct EnemyState {
+    uint8_t enemies_in;       // Enemies inside tube
+    uint8_t enemies_top;      // Enemies at top
+    uint8_t ply_shotcnt;      // Active player shots
+    uint8_t cur_enemies[5];   // Current enemy counts
+    uint8_t max_enemies[5];   // Maximum enemy limits
+    uint8_t min_enemies[5];   // Minimum enemy ratios
+};
+```
 
-### Technical Metrics
-- **Performance**: 60 FPS on target hardware
-- **Memory Usage**: <100MB total memory usage
-- **Load Times**: <5 seconds to game start
-- **Bug Density**: <1 critical bug per 1000 lines of code
+### Critical Game Mechanics
+1. **Enemy Types**: Implement 5 enemy types with accurate behavior patterns
+2. **Weapon System**: Zap (close range) and Fire (long range) weapons
+3. **Tube Geometry**: 16-segment tube with 3D perspective
+4. **Game States**: Implement all 16 game states from original
+5. **Memory Management**: Accurate recreation of original memory layout
+
+### Performance Targets
+- **Frame Rate**: 60 FPS consistent
+- **Memory Usage**: <100MB total
+- **CPU Usage**: <5% on modern hardware
+- **Load Time**: <5 seconds to game start
 
 ### Quality Metrics
 - **Test Coverage**: >90% code coverage
+- **Bug Density**: <1 critical bug per 1000 lines
 - **User Satisfaction**: >4.0/5.0 rating
-- **Accessibility**: WCAG 2.1 AA compliance
-- **Platform Support**: 100% target platform compatibility
-
-### Development Metrics
-- **On-Time Delivery**: 90% milestone completion on schedule
-- **Code Quality**: <5% technical debt
-- **Documentation**: 100% API documentation coverage
-- **Team Velocity**: Consistent story point completion
-
-## Resource Requirements
-
-### Human Resources
-- **Lead Developer**: 1 full-time (32 weeks)
-- **Graphics Developer**: 1 full-time (32 weeks)
-- **Audio Developer**: 1 part-time (16 weeks)
-- **QA Tester**: 1 part-time (16 weeks)
-- **UI/UX Designer**: 1 part-time (8 weeks)
-
-### Technical Resources
-- **Development Hardware**: High-performance workstations
-- **Target Platforms**: Windows, macOS, Linux development machines
-- **Testing Hardware**: Various target platform configurations
-- **Build Infrastructure**: CI/CD servers and build automation
-
-### External Resources
-- **Third-Party Libraries**: OpenGL, SDL2, OpenAL, Google Test
-- **Development Tools**: Visual Studio, CLion, CMake, Git
-- **Testing Tools**: Performance profilers, memory analyzers
-- **Documentation Tools**: Doxygen, Markdown editors
-
-## Communication Plan
-
-### Team Communication
-- **Daily Standups**: 15-minute daily team meetings
-- **Weekly Reviews**: 1-hour weekly progress reviews
-- **Sprint Planning**: 2-hour bi-weekly sprint planning
-- **Retrospectives**: 1-hour bi-weekly retrospectives
-
-### Stakeholder Communication
-- **Monthly Reports**: Progress reports to stakeholders
-- **Demo Sessions**: Bi-weekly feature demonstrations
-- **Milestone Reviews**: Formal milestone completion reviews
-- **Release Planning**: Release preparation and coordination
-
-### Documentation Updates
-- **Weekly**: Update progress documentation
-- **Bi-weekly**: Update technical documentation
-- **Monthly**: Update project documentation
-- **Release**: Complete documentation review and update 
+- **Accessibility**: WCAG 2.1 AA compliance 

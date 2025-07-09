@@ -67,16 +67,24 @@ The Tempest rebuild uses a modern, modular architecture that separates concerns 
 **Purpose**: Handles all rendering operations
 
 **Key Components**:
-- **Renderer**: Main rendering pipeline
-- **VectorRenderer**: Vector graphics drawing
+- **Renderer**: Main rendering pipeline with basic primitive rendering and vector graphics support
+- **Graphics API Abstraction**: Platform-independent graphics API (OpenGL/Vulkan) with IGraphicsAPI interface
+- **VectorCommandProcessor**: Vector graphics command processing based on original vsdraw commands
+- **TubeRenderer**: 3D tube geometry rendering with perspective and depth scaling
+- **ShaderManager**: Shader compilation and management with built-in Tempest shaders
+- **Camera System**: 3D camera with perspective projection for tube geometry
+- **FrameBuffer Management**: Post-processing and effects support
+- **VectorRenderer**: Advanced vector graphics drawing with command batching
 - **ParticleSystem**: Explosions and effects
 - **ShaderManager**: Shader compilation and management
 - **TextureManager**: Texture loading and caching
 
 **Original Mapping**:
-- Vector drawing commands → VectorRenderer
-- `vidptr_l/h` → Renderer state management
-- Character definitions → VectorRenderer font system
+- Vector drawing commands → VectorCommandProcessor with vsdraw command recreation
+- `vidptr_l/h` → Renderer state management with Graphics API abstraction
+- Character definitions → VectorRenderer font system with built-in shaders
+- Tube geometry → TubeRenderer with 16-segment 3D perspective system
+- Graphics API → IGraphicsAPI abstraction with OpenGL/Vulkan implementations
 
 ### 3. Audio Engine
 **Purpose**: Manages sound effects and music

@@ -225,6 +225,375 @@ struct TubeGeometry {
 };
 ```
 
+### Basic Rendering Infrastructure
+
+#### Graphics API Setup
+```cpp
+// Graphics API abstraction layer
+class IGraphicsAPI {
+public:
+    virtual ~IGraphicsAPI() = default;
+    
+    // Initialization
+    virtual bool Initialize(const GraphicsConfig& config) = 0;
+    virtual void Shutdown() = 0;
+    
+    // Window management
+    virtual void CreateWindow(const WindowConfig& config) = 0;
+    virtual void DestroyWindow() = 0;
+    virtual bool ShouldClose() const = 0;
+    virtual void SwapBuffers() = 0;
+    
+    // Context management
+    virtual void MakeCurrent() = 0;
+    virtual void Clear(const Color& color) = 0;
+    virtual void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) = 0;
+};
+
+// OpenGL implementation
+class OpenGLAPI : public IGraphicsAPI {
+public:
+    bool Initialize(const GraphicsConfig& config) override;
+    void Shutdown() override;
+    
+    // OpenGL-specific methods
+    void SetClearColor(const Color& color);
+    void EnableDepthTest(bool enable);
+    void SetBlendMode(BlendMode mode);
+    
+private:
+    GLuint m_vertexArrayObject;
+    GLuint m_vertexBufferObject;
+    GLuint m_elementBufferObject;
+};
+
+// Vulkan implementation (optional)
+class VulkanAPI : public IGraphicsAPI {
+public:
+    bool Initialize(const GraphicsConfig& config) override;
+    void Shutdown() override;
+    
+    // Vulkan-specific methods
+    void CreateSwapChain();
+    void CreateRenderPass();
+    void CreateFramebuffers();
+    
+private:
+    VkInstance m_instance;
+    VkDevice m_device;
+    VkSwapchainKHR m_swapchain;
+};
+```
+
+#### Renderer Class Implementation
+```cpp
+// Main renderer class
+class Renderer {
+public:
+    Renderer();
+    ~Renderer();
+    
+    // Lifecycle
+    bool Initialize(const RendererConfig& config);
+    void Shutdown();
+    void BeginFrame();
+    void EndFrame();
+    void Present();
+    
+    // Basic rendering
+    void DrawLine(const Vector3f& start, const Vector3f& end, const Color& color);
+    void DrawTriangle(const Vector3f& a, const Vector3f& b, const Vector3f& c, const Color& color);
+    void DrawQuad(const Vector3f& position, const Vector2f& size, const Color& color);
+    void DrawCircle(const Vector3f& center, float radius, const Color& color);
+    
+    // Vector graphics
+    void DrawVector(const std::vector<VectorCommand>& commands);
+    void DrawVectorShape(const VectorShape& shape);
+    void BatchVectorCommands(const std::vector<VectorCommand>& commands);
+    
+    // Tube rendering
+    void DrawTube(const TubeGeometry& tube, const Camera& camera);
+    void DrawTubeSegment(uint8_t segment, float depth, const Color& color);
+    void DrawTubeBackground(const TubeGeometry& tube);
+    
+    // Game object rendering
+    void DrawPlayer(const Player& player, const Camera& camera);
+    void DrawEnemy(const Enemy& enemy, const Camera& camera);
+    void DrawProjectile(const Projectile& projectile, const Camera& camera);
+    void DrawExplosion(const Explosion& explosion, const Camera& camera);
+    
+    // UI rendering
+    void DrawText(const Vector3f& position, const std::string& text, const Color& color);
+    void DrawHUD(const HUD& hud);
+    void DrawMenu(const Menu& menu);
+    
+    // State management
+    void SetViewMatrix(const Matrix4f& view);
+    void SetProjectionMatrix(const Matrix4f& projection);
+    void SetModelMatrix(const Matrix4f& model);
+    void SetColor(const Color& color);
+    void SetAlpha(float alpha);
+    
+private:
+    // Graphics API
+    std::unique_ptr<IGraphicsAPI> m_graphicsAPI;
+    
+    // Shader management
+    std::unique_ptr<ShaderManager> m_shaderManager;
+    
+    // Buffer management
+    std::unique_ptr<VertexBuffer> m_vertexBuffer;
+    std::unique_ptr<IndexBuffer> m_indexBuffer;
+    
+    // State
+    Matrix4f m_viewMatrix;
+    Matrix4f m_projectionMatrix;
+    Matrix4f m_modelMatrix;
+    Color m_currentColor;
+    float m_currentAlpha;
+    
+    // Batching
+    std::vector<RenderCommand> m_renderCommands;
+    void FlushRenderCommands();
+};
+```
+
+#### Shader System
+```cpp
+// Shader management
+class ShaderManager {
+public:
+    ShaderManager();
+    ~ShaderManager();
+    
+    // Shader creation
+    ShaderID CreateShader(const std::string& vertexSource, const std::string& fragmentSource);
+    ShaderID CreateShaderFromFiles(const std::string& vertexPath, const std::string& fragmentPath);
+    void DestroyShader(ShaderID shader);
+    
+    // Shader usage
+    void UseShader(ShaderID shader);
+    void SetUniform(ShaderID shader, const std::string& name, int value);
+    void SetUniform(ShaderID shader, const std::string& name, float value);
+    void SetUniform(ShaderID shader, const std::string& name, const Vector3f& value);
+    void SetUniform(ShaderID shader, const std::string& name, const Matrix4f& value);
+    
+private:
+    std::unordered_map<ShaderID, GLuint> m_shaders;
+    ShaderID m_currentShader;
+    ShaderID m_nextShaderID;
+    
+    GLuint CompileShader(GLenum type, const std::string& source);
+    bool LinkProgram(GLuint program);
+};
+
+// Built-in shaders for Tempest
+class TempestShaders {
+public:
+    static const std::string VECTOR_VERTEX_SHADER;
+    static const std::string VECTOR_FRAGMENT_SHADER;
+    static const std::string TUBE_VERTEX_SHADER;
+    static const std::string TUBE_FRAGMENT_SHADER;
+    static const std::string PARTICLE_VERTEX_SHADER;
+    static const std::string PARTICLE_FRAGMENT_SHADER;
+    static const std::string UI_VERTEX_SHADER;
+    static const std::string UI_FRAGMENT_SHADER;
+};
+```
+
+#### Vector Command System
+```cpp
+// Vector command processing based on original vsdraw commands
+class VectorCommandProcessor {
+public:
+    VectorCommandProcessor();
+    ~VectorCommandProcessor();
+    
+    // Command processing
+    void ProcessCommands(const std::vector<VectorCommand>& commands);
+    void BatchCommands(const std::vector<VectorCommand>& commands);
+    void OptimizeCommands(std::vector<VectorCommand>& commands);
+    
+    // Command generation
+    std::vector<VectorCommand> GeneratePlayerShip(uint8_t segment, float depth);
+    std::vector<VectorCommand> GenerateEnemy(Enemy::Type type, uint8_t segment, float depth);
+    std::vector<VectorCommand> GenerateProjectile(uint8_t segment, float depth);
+    std::vector<VectorCommand> GenerateExplosion(const Vector3f& position, float scale);
+    
+    // Command optimization
+    void SortCommandsByDepth(std::vector<VectorCommand>& commands);
+    void MergeAdjacentLines(std::vector<VectorCommand>& commands);
+    void RemoveRedundantCommands(std::vector<VectorCommand>& commands);
+    
+private:
+    // Command batching
+    struct CommandBatch {
+        std::vector<VectorCommand> commands;
+        uint8_t color;
+        float scale;
+        bool isVisible;
+    };
+    
+    std::vector<CommandBatch> m_batches;
+    
+    // Optimization helpers
+    bool AreCommandsAdjacent(const VectorCommand& a, const VectorCommand& b);
+    float CalculateDepth(const VectorCommand& command);
+};
+```
+
+#### Tube Geometry Rendering
+```cpp
+// 3D tube geometry based on original game specifications
+class TubeRenderer {
+public:
+    TubeRenderer();
+    ~TubeRenderer();
+    
+    // Tube generation
+    void GenerateTube(uint8_t segments, float radius, float depth);
+    void UpdateTubeGeometry(const TubeGeometry& geometry);
+    void SetTubeDepth(float depth);
+    
+    // Segment rendering
+    void DrawSegment(uint8_t segment, float depth, const Color& color);
+    void DrawSegmentBackground(uint8_t segment, float depth);
+    void DrawSegmentBorder(uint8_t segment, float depth, const Color& color);
+    
+    // Perspective and scaling
+    Vector3f CalculateSegmentPosition(uint8_t segment, float depth);
+    float CalculateSegmentScale(float depth);
+    Matrix4f CalculatePerspectiveMatrix(float depth);
+    
+    // Depth management
+    void SetDepthRange(float nearDepth, float farDepth);
+    float GetDepthAtPosition(const Vector3f& position);
+    bool IsPositionInTube(const Vector3f& position);
+    
+private:
+    // Tube geometry
+    uint8_t m_segments;
+    float m_radius;
+    float m_depth;
+    float m_nearDepth;
+    float m_farDepth;
+    
+    // Segment data
+    std::array<Vector3f, 16> m_segmentPositions;
+    std::array<float, 16> m_segmentScales;
+    
+    // Rendering buffers
+    std::vector<float> m_vertexData;
+    std::vector<uint32_t> m_indexData;
+    
+    // Helper methods
+    void CalculateSegmentPositions();
+    void CalculateSegmentScales();
+    Vector3f InterpolatePosition(uint8_t segment, float t);
+};
+```
+
+#### Camera and Viewport Management
+```cpp
+// Camera system for 3D perspective
+class Camera {
+public:
+    Camera();
+    
+    // Camera setup
+    void SetPosition(const Vector3f& position);
+    void SetTarget(const Vector3f& target);
+    void SetUp(const Vector3f& up);
+    void SetFOV(float fov);
+    void SetNearPlane(float near);
+    void SetFarPlane(float far);
+    
+    // Matrix generation
+    Matrix4f GetViewMatrix() const;
+    Matrix4f GetProjectionMatrix() const;
+    Matrix4f GetViewProjectionMatrix() const;
+    
+    // Camera movement
+    void RotateAroundTarget(float yaw, float pitch);
+    void Zoom(float factor);
+    void Pan(const Vector2f& offset);
+    
+    // Utility
+    Vector3f GetPosition() const { return m_position; }
+    Vector3f GetTarget() const { return m_target; }
+    Vector3f GetForward() const;
+    Vector3f GetRight() const;
+    Vector3f GetUp() const;
+    
+private:
+    Vector3f m_position;
+    Vector3f m_target;
+    Vector3f m_up;
+    float m_fov;
+    float m_near;
+    float m_far;
+    
+    // Camera state
+    float m_yaw;
+    float m_pitch;
+    float m_distance;
+    
+    void UpdateVectors();
+};
+
+// Viewport management
+class Viewport {
+public:
+    Viewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height);
+    
+    void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height);
+    void SetAspectRatio(float aspectRatio);
+    
+    uint32_t GetX() const { return m_x; }
+    uint32_t GetY() const { return m_y; }
+    uint32_t GetWidth() const { return m_width; }
+    uint32_t GetHeight() const { return m_height; }
+    float GetAspectRatio() const { return m_aspectRatio; }
+    
+private:
+    uint32_t m_x, m_y, m_width, m_height;
+    float m_aspectRatio;
+};
+```
+
+#### Frame Buffer Management
+```cpp
+// Frame buffer for post-processing and effects
+class FrameBuffer {
+public:
+    FrameBuffer(uint32_t width, uint32_t height);
+    ~FrameBuffer();
+    
+    // Frame buffer operations
+    void Bind();
+    void Unbind();
+    void Resize(uint32_t width, uint32_t height);
+    
+    // Texture access
+    GLuint GetColorTexture() const { return m_colorTexture; }
+    GLuint GetDepthTexture() const { return m_depthTexture; }
+    
+    // Blitting
+    void BlitToScreen(uint32_t screenWidth, uint32_t screenHeight);
+    void BlitToFrameBuffer(FrameBuffer& target);
+    
+private:
+    GLuint m_framebuffer;
+    GLuint m_colorTexture;
+    GLuint m_depthTexture;
+    uint32_t m_width;
+    uint32_t m_height;
+    
+    void CreateTextures();
+    void DestroyTextures();
+};
+```
+
 ### Shader Specifications
 ```glsl
 // Vertex shader for vector graphics

@@ -127,57 +127,128 @@
 - Game state tests and validation
 - All unit tests passing (70 tests passed, 0 failed)
 
-## Phase 3: Graphics & Effects (Weeks 13-20)
+## Phase 2.5: Basic Rendering Infrastructure (Weeks 12-14)
 
-### Week 13-14: Advanced Vector Graphics
-**Goal**: Implement advanced vector graphics rendering
+### Week 12-13: Core Rendering System
+**Goal**: Implement basic rendering infrastructure and graphics API integration
 
 #### Tasks:
-- [ ] **Vector Command System**
-  - Implement vector command processing
-  - Create command batching system
-  - Add vector command optimization
-  - Implement command caching
+- [ ] **Graphics API Setup**
+  - [ ] Implement OpenGL/Vulkan initialization
+  - [ ] Create window management system
+  - [ ] Add graphics context management
+  - [ ] Implement basic rendering pipeline setup
 
-- [ ] **Tube Rendering**
-  - Create 3D tube rendering system
-  - Implement perspective projection
-  - Add depth-based scaling
-  - Create tube segment rendering
+- [ ] **Basic Rendering Pipeline**
+  - [ ] Create Renderer class implementation
+  - [ ] Add shader compilation and management
+  - [ ] Implement basic primitive rendering (lines, triangles, quads)
+  - [ ] Add camera and viewport management
+  - [ ] Create frame buffer management
 
-- [ ] **Character Rendering**
-  - Implement character vector graphics
-  - Create text rendering system
-  - Add number rendering
-  - Implement UI element rendering
+- [ ] **Core Graphics Components**
+  - [ ] Implement Shader class with compilation
+  - [ ] Add Texture loading and binding system
+  - [ ] Create basic sprite rendering
+  - [ ] Add color and material management
+  - [ ] Implement basic 2D rendering utilities
+
+#### Deliverables:
+- Functional OpenGL/Vulkan rendering pipeline
+- Basic primitive rendering system
+- Shader compilation and management
+- Window and context management
+- Core rendering integration tests
+
+### Week 13-14: Game-Specific Rendering
+**Goal**: Implement rendering systems specific to Tempest's requirements
+
+#### Tasks:
+- [ ] **Tube Geometry Rendering**
+  - [ ] Implement 3D tube geometry generation
+  - [ ] Add perspective projection system
+  - [ ] Create depth-based scaling
+  - [ ] Implement 16-segment tube rendering
+  - [ ] Add tube segment positioning and scaling
+
+- [ ] **Vector Graphics Foundation**
+  - [ ] Create VectorCommand system based on original vsdraw commands
+  - [ ] Implement vector command processing
+  - [ ] Add vector command batching
+  - [ ] Create basic vector graphics pipeline
+  - [ ] Implement vector command optimization
+
+- [ ] **Game Object Rendering**
+  - [ ] Add player ship rendering
+  - [ ] Implement enemy rendering for all 5 types
+  - [ ] Create projectile rendering system
+  - [ ] Add explosion and particle effects
+  - [ ] Implement UI element rendering
+
+#### Deliverables:
+- 3D tube rendering with perspective
+- Vector graphics command system
+- Game object rendering pipeline
+- Basic particle system
+- Game-specific rendering tests
+
+## Phase 3: Advanced Graphics & Effects (Weeks 15-22)
+
+### Week 15-16: Advanced Vector Graphics
+**Goal**: Implement advanced vector graphics rendering based on original game
+
+#### Tasks:
+- [ ] **Advanced Vector Command System**
+  - [ ] Implement full vector command processing
+  - [ ] Add command batching for efficient GPU usage
+  - [ ] Create vector command optimization
+  - [ ] Add command caching system
+  - [ ] Implement vector command sorting
+
+- [ ] **Advanced Tube Rendering**
+  - [ ] Enhance 3D tube rendering system
+  - [ ] Add advanced perspective projection
+  - [ ] Implement depth-based scaling
+  - [ ] Create tube segment rendering optimization
+  - [ ] Add dynamic tube geometry support
+
+- [ ] **Character and Text Rendering**
+  - [ ] Implement character vector graphics
+  - [ ] Create text rendering system
+  - [ ] Add number rendering
+  - [ ] Implement UI element rendering
+  - [ ] Add font system for vector graphics
 
 #### Deliverables:
 - Advanced vector graphics system
-- 3D tube rendering with perspective
+- Optimized 3D tube rendering with perspective
 - Character and text rendering
 - Vector graphics performance tests
 
-### Week 15-16: Particle System and Effects
+### Week 17-18: Particle System and Effects
 **Goal**: Implement particle effects and visual enhancements
 
 #### Tasks:
 - [ ] **Particle System**
-  - Create ParticleSystem class
-  - Implement particle physics
-  - Add particle rendering
-  - Create particle effects
+  - [ ] Create ParticleSystem class
+  - [ ] Implement particle physics
+  - [ ] Add particle rendering
+  - [ ] Create particle effects
+  - [ ] Add particle system optimization
 
 - [ ] **Explosion Effects**
-  - Implement enemy explosion effects
-  - Create player death effects
-  - Add weapon impact effects
-  - Implement screen shake effects
+  - [ ] Implement enemy explosion effects
+  - [ ] Create player death effects
+  - [ ] Add weapon impact effects
+  - [ ] Implement screen shake effects
+  - [ ] Add explosion particle systems
 
 - [ ] **Visual Enhancements**
-  - Add post-processing effects
-  - Implement screen transitions
-  - Create visual feedback systems
-  - Add performance monitoring
+  - [ ] Add post-processing effects
+  - [ ] Implement screen transitions
+  - [ ] Create visual feedback systems
+  - [ ] Add performance monitoring
+  - [ ] Implement visual effect optimization
 
 #### Deliverables:
 - Complete particle system
@@ -185,85 +256,91 @@
 - Screen transitions and effects
 - Visual effects performance tests
 
-### Week 17-18: UI and HUD System
+### Week 19-20: UI and HUD System
 **Goal**: Implement user interface and heads-up display
 
 #### Tasks:
 - [ ] **HUD System**
-  - Create HUD rendering system
-  - Implement score display
-  - Add lives indicator
-  - Create level display
+  - [ ] Create HUD rendering system
+  - [ ] Implement score display
+  - [ ] Add lives indicator
+  - [ ] Create level display
+  - [ ] Add weapon status indicators
 
 - [ ] **Menu System**
-  - Implement main menu
-  - Create pause menu
-  - Add options menu
-  - Create high score menu
+  - [ ] Implement main menu
+  - [ ] Create pause menu
+  - [ ] Add options menu
+  - [ ] Create high score menu
+  - [ ] Add menu navigation system
 
 - [ ] **UI Components**
-  - Create button system
-  - Implement text input
-  - Add slider controls
-  - Create menu navigation
+  - [ ] Create button rendering
+  - [ ] Add text input system
+  - [ ] Implement slider controls
+  - [ ] Add checkbox and radio buttons
+  - [ ] Create UI event handling
 
 #### Deliverables:
 - Complete HUD system
 - Menu system with navigation
-- UI components and controls
+- UI component library
 - UI responsiveness tests
 
-### Week 19-20: Performance Optimization
+### Week 21-22: Performance Optimization
 **Goal**: Optimize graphics and rendering performance
 
 #### Tasks:
 - [ ] **Rendering Optimization**
-  - Implement render command batching
-  - Add frustum culling
-  - Create level-of-detail system
-  - Optimize shader usage
+  - [ ] Implement render command batching
+  - [ ] Add frustum culling
+  - [ ] Create level-of-detail system
+  - [ ] Implement occlusion culling
+  - [ ] Add render state optimization
 
 - [ ] **Memory Optimization**
-  - Implement object pooling
-  - Add memory profiling
-  - Create memory optimization
-  - Implement garbage collection
+  - [ ] Optimize vertex buffer usage
+  - [ ] Implement texture atlasing
+  - [ ] Add shader program caching
+  - [ ] Create memory pool management
+  - [ ] Implement garbage collection
 
 - [ ] **Performance Monitoring**
-  - Add frame rate monitoring
-  - Implement performance metrics
-  - Create performance debugging tools
-  - Add performance profiling
+  - [ ] Add frame time monitoring
+  - [ ] Implement performance profiling
+  - [ ] Create performance metrics
+  - [ ] Add performance debugging tools
+  - [ ] Implement performance regression testing
 
 #### Deliverables:
 - Optimized rendering pipeline
-- Memory optimization system
+- Memory-efficient graphics system
 - Performance monitoring tools
-- Performance benchmarks
+- Optimized rendering benchmarks
 
-## Phase 4: Audio & Polish (Weeks 21-28)
+## Phase 4: Audio & Polish (Weeks 23-30)
 
 ### Week 21-22: Audio System Implementation
 **Goal**: Implement audio system based on POKEY chip recreation
 
 #### Tasks:
 - [ ] **POKEY Chip Recreation**
-  - Implement POKEY synthesizer
-  - Create 4-channel audio system
-  - Add waveform generation
-  - Implement audio synthesis
+  - [ ] Implement POKEY synthesizer
+  - [ ] Create 4-channel audio system
+  - [ ] Add waveform generation
+  - [ ] Implement audio synthesis
 
 - [ ] **Sound Effects**
-  - Implement weapon sound effects
-  - Create explosion sounds
-  - Add UI sound effects
-  - Implement ambient sounds
+  - [ ] Implement weapon sound effects
+  - [ ] Create explosion sounds
+  - [ ] Add UI sound effects
+  - [ ] Implement ambient sounds
 
 - [ ] **Audio Management**
-  - Create AudioManager class
-  - Implement audio resource management
-  - Add volume controls
-  - Create audio configuration
+  - [ ] Create AudioManager class
+  - [ ] Implement audio resource management
+  - [ ] Add volume controls
+  - [ ] Create audio configuration
 
 #### Deliverables:
 - POKEY chip recreation
@@ -276,22 +353,22 @@
 
 #### Tasks:
 - [ ] **Game Balance**
-  - Balance enemy spawning rates
-  - Adjust weapon effectiveness
-  - Fine-tune difficulty progression
-  - Balance scoring system
+  - [ ] Balance enemy spawning rates
+  - [ ] Adjust weapon effectiveness
+  - [ ] Fine-tune difficulty progression
+  - [ ] Balance scoring system
 
 - [ ] **Visual Polish**
-  - Add screen effects
-  - Implement smooth transitions
-  - Create visual feedback
-  - Add animation polish
+  - [ ] Add screen effects
+  - [ ] Implement smooth transitions
+  - [ ] Create visual feedback
+  - [ ] Add animation polish
 
 - [ ] **Game Feel**
-  - Implement responsive controls
-  - Add haptic feedback
-  - Create satisfying effects
-  - Polish user experience
+  - [ ] Implement responsive controls
+  - [ ] Add haptic feedback
+  - [ ] Create satisfying effects
+  - [ ] Polish user experience
 
 #### Deliverables:
 - Balanced gameplay mechanics
@@ -304,22 +381,22 @@
 
 #### Tasks:
 - [ ] **Accessibility Features**
-  - Add color blind support
-  - Implement high contrast mode
-  - Create customizable controls
-  - Add audio accessibility
+  - [ ] Add color blind support
+  - [ ] Implement high contrast mode
+  - [ ] Create customizable controls
+  - [ ] Add audio accessibility
 
 - [ ] **Configuration System**
-  - Implement settings menu
-  - Create configuration persistence
-  - Add graphics options
-  - Create audio settings
+  - [ ] Implement settings menu
+  - [ ] Create configuration persistence
+  - [ ] Add graphics options
+  - [ ] Create audio settings
 
 - [ ] **Input Customization**
-  - Implement key rebinding
-  - Add gamepad configuration
-  - Create input sensitivity options
-  - Add accessibility controls
+  - [ ] Implement key rebinding
+  - [ ] Add gamepad configuration
+  - [ ] Create input sensitivity options
+  - [ ] Add accessibility controls
 
 #### Deliverables:
 - Complete accessibility features
@@ -332,22 +409,22 @@
 
 #### Tasks:
 - [ ] **Bug Fixes**
-  - Fix identified bugs
-  - Address performance issues
-  - Resolve compatibility problems
-  - Fix user experience issues
+  - [ ] Fix identified bugs
+  - [ ] Address performance issues
+  - [ ] Resolve compatibility problems
+  - [ ] Fix user experience issues
 
 - [ ] **Final Polish**
-  - Add final visual effects
-  - Implement last-minute features
-  - Create launch sequence
-  - Add final touches
+  - [ ] Add final visual effects
+  - [ ] Implement last-minute features
+  - [ ] Create launch sequence
+  - [ ] Add final touches
 
 - [ ] **Comprehensive Testing**
-  - Perform full game testing
-  - Test all platforms
-  - Validate performance
-  - Conduct user testing
+  - [ ] Perform full game testing
+  - [ ] Test all platforms
+  - [ ] Validate performance
+  - [ ] Conduct user testing
 
 #### Deliverables:
 - Bug-free game release
@@ -362,22 +439,22 @@
 
 #### Tasks:
 - [ ] **Platform Testing**
-  - Test Windows compatibility
-  - Test macOS compatibility
-  - Test Linux compatibility
-  - Test web browser compatibility
+  - [ ] Test Windows compatibility
+  - [ ] Test macOS compatibility
+  - [ ] Test Linux compatibility
+  - [ ] Test web browser compatibility
 
 - [ ] **Performance Optimization**
-  - Optimize for each platform
-  - Address platform-specific issues
-  - Implement platform-specific features
-  - Create platform-specific builds
+  - [ ] Optimize for each platform
+  - [ ] Address platform-specific issues
+  - [ ] Implement platform-specific features
+  - [ ] Create platform-specific builds
 
 - [ ] **Compatibility Testing**
-  - Test with different hardware
-  - Validate driver compatibility
-  - Test with different input devices
-  - Verify audio compatibility
+  - [ ] Test with different hardware
+  - [ ] Validate driver compatibility
+  - [ ] Test with different input devices
+  - [ ] Verify audio compatibility
 
 #### Deliverables:
 - Platform-tested builds
@@ -390,22 +467,22 @@
 
 #### Tasks:
 - [ ] **Release Preparation**
-  - Create release builds
-  - Prepare distribution packages
-  - Create installation scripts
-  - Prepare documentation
+  - [ ] Create release builds
+  - [ ] Prepare distribution packages
+  - [ ] Create installation scripts
+  - [ ] Prepare documentation
 
 - [ ] **Final Testing**
-  - Conduct final testing
-  - Validate all features
-  - Test installation process
-  - Verify distribution
+  - [ ] Conduct final testing
+  - [ ] Validate all features
+  - [ ] Test installation process
+  - [ ] Verify distribution
 
 - [ ] **Release Deployment**
-  - Deploy to distribution platforms
-  - Create release notes
-  - Prepare marketing materials
-  - Launch release
+  - [ ] Deploy to distribution platforms
+  - [ ] Create release notes
+  - [ ] Prepare marketing materials
+  - [ ] Launch release
 
 #### Deliverables:
 - Release-ready builds

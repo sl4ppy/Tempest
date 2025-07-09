@@ -116,19 +116,27 @@ Based on the disassembly analysis, Tempest features:
 - Weapon and combat system (Zap, Fire, Super Zapper)
 - Game state management (16 states)
 
-#### Phase 3: Graphics & Effects (Weeks 13-20)
-- Advanced vector graphics
-- Particle system and effects
-- Screen effects and transitions
+#### Phase 2.5: Basic Rendering Infrastructure (Weeks 12-14)
+- Graphics API setup (OpenGL/Vulkan)
+- Basic rendering pipeline with primitive rendering
+- Vector command system based on original vsdraw commands
+- Tube geometry rendering with 3D perspective
+- Game object rendering (player, enemies, projectiles)
+- Shader management and built-in Tempest shaders
+
+#### Phase 3: Advanced Graphics & Effects (Weeks 15-22)
+- Advanced vector graphics with command batching
+- Particle system and visual effects
+- UI and HUD system
 - Performance optimization
 
-#### Phase 4: Audio & Polish (Weeks 21-28)
+#### Phase 4: Audio & Polish (Weeks 23-30)
 - Audio system implementation (POKEY recreation)
 - UI/UX implementation
 - Game balance and polish
 - Final performance optimization
 
-#### Phase 5: Testing & Release (Weeks 29-32)
+#### Phase 5: Testing & Release (Weeks 31-32)
 - Comprehensive testing
 - Platform-specific builds
 - Release preparation and deployment
@@ -136,8 +144,9 @@ Based on the disassembly analysis, Tempest features:
 ### Key Milestones
 - **Week 4**: Working rendering pipeline with vector graphics
 - **Week 12**: Complete core gameplay with all 5 enemy types
-- **Week 20**: Enhanced graphics with particle effects
-- **Week 28**: Polished game with audio and UI
+- **Week 14**: Basic rendering infrastructure with tube geometry and vector graphics
+- **Week 22**: Enhanced graphics with particle effects and advanced vector graphics
+- **Week 30**: Polished game with audio and UI
 - **Week 32**: Final release across all platforms
 
 ## Technical Specifications

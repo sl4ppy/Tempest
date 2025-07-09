@@ -466,39 +466,73 @@ private:
 
 ### LevelManager
 
-Manages level progression and difficulty.
+Manages level progression, difficulty, and level-specific configuration.
 
 ```cpp
 class LevelManager {
 public:
     // Level management
-    void LoadLevel(uint8_t levelNumber);
-    void NextLevel();
-    void RestartLevel();
+    void startLevel(uint8_t levelNumber);
+    void setCurrentLevel(uint8_t levelNumber);
+    void advanceLevel();
+    void restartLevel();
     
     // Level information
-    uint8_t GetCurrentLevel() const;
-    uint8_t GetMaxLevel() const;
-    bool IsLevelComplete() const;
+    uint8_t getCurrentLevel() const;
+    uint8_t getMaxLevel() const;
+    bool isLevelComplete() const;
+    bool isLevelFailed() const;
+    
+    // Level configuration
+    const LevelConfig& getCurrentLevelConfig() const;
+    LevelConfig& getLevelConfig(uint8_t levelNumber);
+    void setLevelConfig(uint8_t levelNumber, const LevelConfig& config);
     
     // Difficulty
-    void SetDifficulty(Difficulty difficulty);
-    Difficulty GetDifficulty() const;
-    float GetDifficultyMultiplier() const;
+    void setDifficulty(uint8_t difficulty);
+    uint8_t getDifficulty() const;
     
-    // Enemy spawning
-    void SpawnEnemyWave(const EnemyWave& wave);
-    void SpawnEnemy(Enemy::Type type, uint8_t segment, float along);
+    // Level state
+    uint32_t getLevelScore() const;
+    uint16_t getEnemiesKilled() const;
+    float getLevelTime() const;
     
-    // Level data
-    const LevelData& GetCurrentLevelData() const;
-    void SetLevelData(uint8_t level, const LevelData& data);
+    // Event handling
+    void handleEnemyKilled(const Event& event);
+    void handlePlayerDeath(const Event& event);
+    void handleScoreChanged(const Event& event);
     
 private:
-    uint8_t m_currentLevel = 0;
-    Difficulty m_difficulty = Difficulty::Normal;
-    LevelData m_currentLevelData;
-    std::vector<EnemyWave> m_pendingWaves;
+    uint8_t currentLevel_ = 1;
+    uint8_t maxLevel_ = 99;
+    uint8_t difficulty_ = 1;
+    bool levelComplete_ = false;
+    bool levelFailed_ = false;
+    uint32_t levelScore_ = 0;
+    uint16_t enemiesKilled_ = 0;
+    uint16_t enemiesSpawned_ = 0;
+    float levelTime_ = 0.0f;
+    float levelStartTime_ = 0.0f;
+    std::vector<LevelConfig> levelConfigs_;
+};
+```
+
+### LevelConfig
+
+Configuration structure for level-specific parameters.
+
+```cpp
+struct LevelConfig {
+    uint8_t levelNumber = 1;
+    uint8_t difficulty = 1;
+    uint16_t maxEnemies = 10;         // Max enemies on screen (up to 200)
+    uint16_t enemiesToKill = 20;      // Enemies to kill for level completion (up to 500)
+    uint8_t tubeSegments = 16;        // Number of tube segments
+    float timeLimit = 0.0f;           // Time limit (0 = no limit)
+    float enemySpawnRate = 1.0f;      // Enemy spawn rate multiplier
+    float enemySpeedMultiplier = 1.0f; // Enemy speed multiplier
+    float enemyHealthMultiplier = 1.0f; // Enemy health multiplier
+    float scoreMultiplier = 1.0f;     // Score multiplier for this level
 };
 ```
 

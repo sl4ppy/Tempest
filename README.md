@@ -62,13 +62,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - The reverse engineering community for the disassembly
 - Open source projects that made this rebuild possible
 
-## Contact
-
-- **Project Lead**: [Your Name]
-- **Email**: [your.email@example.com]
-- **Discord**: [Server Link]
-- **GitHub Issues**: [Repository Issues]
-
 ---
 
 *This project is a tribute to the original Tempest arcade game and is not affiliated with Atari.* 

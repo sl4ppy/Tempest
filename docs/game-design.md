@@ -14,6 +14,7 @@ Tempest is a vector graphics arcade game where players control a ship at the edg
   - **Zap**: Rapid-fire weapon for close enemies
   - **Fire**: Standard weapon for distant enemies
   - **Movement**: Rotate left/right around tube
+  - **Super Zapper**: Limited use weapon (0-2 uses per level)
 - **Lives**: 3-5 (configurable)
 - **Death**: Contact with enemies, enemy shots, or spikes
 
@@ -25,42 +26,61 @@ Tempest is a vector graphics arcade game where players control a ship at the edg
 - **Scaling**: Objects scale based on distance from player
 - **Segments**: Each level has different tube geometry
 
-### Enemy Types
+### Enemy Types (Based on ASM Analysis)
 
-#### 1. Flippers
+#### 1. Flippers (Type 1)
 - **Behavior**: Move along tube segments, flip between segments
 - **Speed**: Moderate movement speed
 - **Threat Level**: Low to medium
 - **Special**: Can grab player if they make contact
 - **AI Pattern**: Segment-to-segment movement with random flipping
+- **Movement Type**: 0=no adjustment, 8=clockwise, 0xC=counter-clockwise
 
-#### 2. Pulsars
+#### 2. Pulsars (Type 2)
 - **Behavior**: Pulse in place, can fire projectiles
 - **Speed**: Stationary with pulsing animation
 - **Threat Level**: Medium (due to shooting)
 - **Special**: Fire enemy shots at player
 - **AI Pattern**: Pulse timing, shooting when player is in range
+- **Movement Type**: Stationary with pulsing effect
 
-#### 3. Tankers
+#### 3. Tankers (Type 3)
 - **Behavior**: Heavy, slow-moving enemies
 - **Speed**: Slow movement
 - **Threat Level**: Medium to high
 - **Special**: Can carry other enemies
 - **AI Pattern**: Straight-line movement toward player
+- **Movement Type**: Direct path toward player segment
 
-#### 4. Spikers
+#### 4. Spikers (Type 4)
 - **Behavior**: Grow spikes on tube segments
 - **Speed**: Stationary during spike growth
 - **Threat Level**: High (spikes block movement)
-- **Special**: Create impassable barriers
+- **Special**: Create impassable barriers on tube segments
 - **AI Pattern**: Spike growth timing, segment targeting
+- **Movement Type**: Stationary, focus on spike creation
 
-#### 5. Fuzzballs
+#### 5. Fuzzballs (Type 5)
 - **Behavior**: Fast, erratic movement
 - **Speed**: High movement speed
 - **Threat Level**: High (difficult to hit)
 - **Special**: Complex movement patterns
 - **AI Pattern**: Random direction changes, speed variations
+- **Movement Type**: Erratic, unpredictable patterns
+
+### Enemy Management System (Based on RAM Analysis)
+
+#### Enemy Counters
+- **Enemies Inside Tube**: Tracked at RAM 0108
+- **Enemies at Top**: Tracked at RAM 0109
+- **Current Counts**: Individual counts for each enemy type (RAM 0142-0146)
+- **Maximum Limits**: Per-type limits (RAM 012E-0132)
+- **Minimum Ratios**: Proportion controls (RAM 0129-012D)
+
+#### Enemy Spawning
+- **Timer System**: 64 enemy timers (RAM 0243-0282)
+- **Movement Data**: 7 active enemies with movement/type info (RAM 0283-0289)
+- **Additional Movement**: Secondary movement data (RAM 028A-0290)
 
 ### Weapon Systems
 
@@ -69,12 +89,34 @@ Tempest is a vector graphics arcade game where players control a ship at the edg
 - **Damage**: Destroys enemies instantly
 - **Usage**: Close combat, rapid-fire
 - **Limitations**: Limited range, energy consumption
+- **Input**: Space bar or gamepad button
 
 #### Fire Weapon
 - **Range**: Long range, projectile-based
 - **Damage**: Destroys enemies on hit
 - **Usage**: Distant enemies, precision shots
 - **Limitations**: Projectile travel time, limited fire rate
+- **Input**: Left Control or gamepad button
+
+#### Super Zapper
+- **Range**: Full screen, instant kill
+- **Damage**: Destroys all enemies on screen
+- **Usage**: Emergency weapon, limited uses (0-2 per level)
+- **Limitations**: Very limited availability
+- **Input**: Special key or gamepad combination
+
+### Projectile System (Based on RAM Analysis)
+
+#### Player Bullets
+- **Maximum Active**: 8 bullets (RAM 0135)
+- **Segment Tracking**: Bullet target segments (RAM 02AD-02B4)
+- **Position Tracking**: Bullet Y positions (RAM 02D3-02DA)
+- **Movement**: Travel down tube toward enemies
+
+#### Enemy Bullets
+- **Maximum Active**: 2 enemy shots (RAM 00A6)
+- **Position Tracking**: Enemy bullet Y positions (RAM 02DB-02DC)
+- **Movement**: Travel up tube toward player
 
 ### Level Progression
 
@@ -107,8 +149,9 @@ Tempest is a vector graphics arcade game where players control a ship at the edg
 - **Persistent Storage**: High scores saved between sessions
 - **Player Initials**: 3-character initials for high scores
 - **Multiple Entries**: Top 10 scores maintained
+- **Storage**: EAROM-based persistent storage
 
-### Game States
+### Game States (Based on ASM Analysis)
 
 #### Main Menu
 - **Start Game**: Begin new game
@@ -147,7 +190,7 @@ Tempest is a vector graphics arcade game where players control a ship at the edg
 - **Variety**: Mix of enemy types for engagement
 
 ### Environmental Elements
-- **Spikes**: Static obstacles on tube segments
+- **Spikes**: Static obstacles on tube segments (RAM 03AC-03BB)
 - **Power-ups**: Temporary enhancements (future consideration)
 - **Visual Effects**: Particle effects, explosions
 - **Background Elements**: Tube texture, depth effects
@@ -155,10 +198,11 @@ Tempest is a vector graphics arcade game where players control a ship at the edg
 ## User Interface
 
 ### HUD Elements
-- **Score Display**: Current score
-- **Lives Indicator**: Remaining lives
-- **Level Display**: Current level number
+- **Score Display**: Current score (RAM 0040-0045)
+- **Lives Indicator**: Remaining lives (RAM 0048-0049)
+- **Level Display**: Current level number (RAM 009F)
 - **Weapon Status**: Zap/Fire weapon indicators
+- **Super Zapper**: Remaining uses display (RAM 03AA)
 
 ### Menu Systems
 - **Main Menu**: Game start, options, high scores
@@ -179,6 +223,7 @@ Tempest is a vector graphics arcade game where players control a ship at the edg
 - **Explosions**: Enemy destruction sounds
 - **Player Sounds**: Movement, damage, death
 - **UI Sounds**: Menu navigation, selections
+- **Spinner Sounds**: Movement feedback
 
 ### Music
 - **Background Music**: Level-specific themes
@@ -198,73 +243,37 @@ Tempest is a vector graphics arcade game where players control a ship at the edg
 - **Color Blind Support**: Alternative color schemes
 - **High Contrast**: Enhanced visibility options
 - **Scalable UI**: Adjustable interface size
-- **Visual Indicators**: Audio cues with visual alternatives
+- **Visual Indicators**: Clear feedback for all game states
 
 ### Audio Accessibility
-- **Visual Audio**: Sound effect visualizations
-- **Subtitles**: Text display for audio cues
-- **Volume Controls**: Individual sound category control
-- **Audio Descriptions**: Spoken game state information
+- **Volume Controls**: Individual volume sliders
+- **Audio Cues**: Non-visual feedback for important events
+- **Subtitles**: Text indicators for audio events
 
 ### Input Accessibility
 - **Customizable Controls**: Remappable key bindings
-- **Multiple Input Methods**: Keyboard, mouse, gamepad
+- **Multiple Input Methods**: Keyboard, mouse, gamepad support
 - **Sensitivity Options**: Adjustable input sensitivity
-- **Assistive Features**: Auto-aim, reduced difficulty options
+- **Alternative Controls**: One-handed play options
 
-## Performance Targets
+## Performance Considerations
 
-### Frame Rate
-- **Target**: 60 FPS consistent
-- **Minimum**: 30 FPS acceptable
-- **Variable**: Adaptive frame rate for different hardware
+### Frame Rate Targets
+- **Target FPS**: 60 FPS consistent
+- **Frame Budget**: 16.67ms per frame
+- **CPU Usage**: <5% on modern hardware
+- **Memory Usage**: <100MB total
 
-### Response Time
-- **Input Lag**: <16ms input response
-- **Visual Feedback**: Immediate visual response
-- **Audio Latency**: <50ms audio response
+### Optimization Strategies
+- **Spatial Partitioning**: For collision detection
+- **Level-of-Detail**: Graphics quality scaling
+- **Culling**: Frustum and occlusion culling
+- **Batching**: Render command batching
+- **Multithreading**: Parallel processing where safe
 
-### Resource Usage
-- **Memory**: <100MB total usage
-- **CPU**: <5% CPU usage on modern hardware
-- **GPU**: Efficient rendering pipeline
-
-## Future Enhancements
-
-### Gameplay Extensions
-- **Power-ups**: Temporary weapon enhancements
-- **Special Weapons**: Unique weapon types
-- **Boss Battles**: Special enemy encounters
-- **Multiplayer**: Cooperative or competitive modes
-
-### Visual Enhancements
-- **Particle Systems**: Enhanced explosion effects
-- **Lighting**: Dynamic lighting effects
-- **Post-processing**: Screen effects and filters
-- **Animation**: Smooth character animations
-
-### Content Additions
-- **New Enemy Types**: Additional enemy varieties
-- **Level Editor**: Custom level creation
-- **Mod Support**: User-created content
-- **Achievements**: Goal-based progression system
-
-## Balance Considerations
-
-### Difficulty Curve
-- **Progressive Challenge**: Steady difficulty increase
-- **Skill Ceiling**: High skill potential for expert players
-- **Accessibility**: Options for different skill levels
-- **Fairness**: Predictable and learnable mechanics
-
-### Replayability
-- **Random Elements**: Procedural enemy placement
-- **Multiple Paths**: Different strategies viable
-- **Score Competition**: High score motivation
-- **Unlockables**: Additional content for progression
-
-### Learning Curve
-- **Tutorial**: Basic gameplay instruction
-- **Progressive Complexity**: Gradual mechanic introduction
-- **Feedback**: Clear success/failure indicators
-- **Practice Mode**: Risk-free learning environment 
+### Critical Performance Paths
+1. **Enemy AI Updates**: Must complete within 2ms per frame
+2. **Collision Detection**: Spatial partitioning for tube segments
+3. **Vector Rendering**: Command batching for efficient GPU usage
+4. **Audio Synthesis**: Real-time POKEY chip emulation
+5. **Input Processing**: Low-latency response for player controls 

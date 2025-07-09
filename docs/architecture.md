@@ -53,7 +53,7 @@ The Tempest rebuild uses a modern, modular architecture that separates concerns 
 
 **Key Components**:
 - **GameStateManager**: Handles game states (menu, playing, paused, etc.)
-- **LevelManager**: Manages level progression and difficulty
+- **LevelManager**: Manages level progression and difficulty, now using uint16_t for maxEnemies and enemiesToKill, supporting large values for advanced levels.
 - **EntityManager**: ECS system for game objects
 - **PhysicsEngine**: Collision detection and resolution
 - **AISystem**: Enemy behavior and pathfinding

@@ -347,8 +347,8 @@ function Test-Environment {
     $tests = @(
         @{ Name = 'Git'; Command = 'git --version' },
         @{ Name = 'CMake'; Command = 'cmake --version' },
-        @{ Name = 'Visual Studio'; Command = 'cl' },
-        @{ Name = 'vcpkg'; Command = 'vcpkg version' }
+        @{ Name = 'Visual Studio'; Command = '"C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\bin\Hostx64\x64\cl.exe"' },
+        @{ Name = 'vcpkg'; Command = 'tools\vcpkg\vcpkg version' }
     )
     
     $allPassed = $true

@@ -273,19 +273,19 @@ TEST_F(EnemyTest, EnemyStateTransitions) {
     EXPECT_TRUE(enemy.isActive);
     
     // Test transition to moving
-    enemy.state = EnemyState::Moving;
+    enemy.setState(EnemyState::Moving);
     EXPECT_EQ(enemy.state, EnemyState::Moving);
     
     // Test transition to attacking
-    enemy.state = EnemyState::Attacking;
+    enemy.setState(EnemyState::Attacking);
     EXPECT_EQ(enemy.state, EnemyState::Attacking);
     
     // Test transition to dying
-    enemy.state = EnemyState::Dying;
+    enemy.setState(EnemyState::Dying);
     EXPECT_EQ(enemy.state, EnemyState::Dying);
     
     // Test transition to dead
-    enemy.state = EnemyState::Dead;
+    enemy.setState(EnemyState::Dead);
     EXPECT_EQ(enemy.state, EnemyState::Dead);
     EXPECT_FALSE(enemy.isActive);
 } 

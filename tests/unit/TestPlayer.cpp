@@ -214,20 +214,41 @@ TEST_F(PlayerTest, TubeGeometryUtilityFunctions) {
 TEST_F(PlayerTest, PlayerUpdate) {
     auto& component = player_.getComponent();
     
-    // Set up movement
+    // Ensure player is alive and has proper movement speed
+    component.isAlive = true;
+    component.moveSpeed = 5.0f;
+    
+    // Set up movement: segment != targetSegment
+    component.segment = 0;
     component.targetSegment = 1;
     component.isMoving = true;
     component.segmentLerp = 0.5f;
     
-    // Update player
-    player_.update(0.1f);
+    // Debug output
+    spdlog::debug("Before update: segment={}, targetSegment={}, isMoving={}, segmentLerp={}, moveSpeed={}", 
+                  component.segment, component.targetSegment, component.isMoving, component.segmentLerp, component.moveSpeed);
     
-    // Check that movement did not progress (matches code logic)
-    EXPECT_EQ(component.segmentLerp, 0.5f);
+    // Update player with smaller deltaTime so movement doesn't complete
+    player_.update(0.05f); // Use 0.05 instead of 0.1
+    
+    // Debug output
+    spdlog::debug("After update: segment={}, targetSegment={}, isMoving={}, segmentLerp={}", 
+                  component.segment, component.targetSegment, component.isMoving, component.segmentLerp);
+    
+    // Check that movement progressed (0.5 + 5.0 * 0.05 = 0.75)
+    EXPECT_GT(component.segmentLerp, 0.5f);
 
     // Test update does not progress movement if not moving
     component.isMoving = false;
     component.segmentLerp = 0.0f;
     player_.update(0.1f);
     EXPECT_EQ(component.segmentLerp, 0.0f);
+
+    // Test update does not progress movement if segment == targetSegment
+    component.isMoving = true;
+    component.segment = 2;
+    component.targetSegment = 2;
+    component.segmentLerp = 0.3f;
+    player_.update(0.1f);
+    EXPECT_EQ(component.segmentLerp, 0.3f);
 } 

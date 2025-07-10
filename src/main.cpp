@@ -1,6 +1,7 @@
 #include <iostream>
 #include <SDL.h>
 #include <spdlog/spdlog.h>
+#include "Graphics/glad/gl.h"
 #include "Core/GameEngine.h"
 
 int main(int argc, char* argv[]) {
@@ -16,18 +17,7 @@ int main(int argc, char* argv[]) {
     
     spdlog::info("SDL2 initialized successfully");
     
-    // Initialize the game engine
-    auto& engine = Tempest::GameEngineSingleton::getInstance();
-    
-    if (!engine.initialize()) {
-        spdlog::error("Failed to initialize game engine");
-        SDL_Quit();
-        return 1;
-    }
-    
-    spdlog::info("Game engine initialized successfully");
-    
-    // Create window
+    // Create window with OpenGL support
     SDL_Window* window = SDL_CreateWindow(
         "Tempest Rebuild",
         SDL_WINDOWPOS_UNDEFINED,
@@ -39,48 +29,93 @@ int main(int argc, char* argv[]) {
     
     if (!window) {
         spdlog::error("Failed to create window: {}", SDL_GetError());
-        engine.shutdown();
         SDL_Quit();
         return 1;
     }
     
     spdlog::info("Window created successfully");
     
-    // Create renderer
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    
-    if (!renderer) {
-        spdlog::error("Failed to create renderer: {}", SDL_GetError());
+    // Create OpenGL context
+    SDL_GLContext glContext = SDL_GL_CreateContext(window);
+    if (!glContext) {
+        spdlog::error("Failed to create OpenGL context: {}", SDL_GetError());
         SDL_DestroyWindow(window);
-        engine.shutdown();
         SDL_Quit();
         return 1;
     }
     
-    spdlog::info("Renderer created successfully");
+    spdlog::info("OpenGL context created successfully");
     
-    // Set up engine configuration
-    engine.setTargetFPS(60.0f);
-    engine.setMaxFrameTime(0.033f); // 30 FPS minimum
+    // Make the OpenGL context current
+    spdlog::info("About to make OpenGL context current...");
+    SDL_GL_MakeCurrent(window, glContext);
+    spdlog::info("OpenGL context made current");
     
-    // Create some test entities to verify ECS system
-    auto& entityManager = engine.getEntityManager();
+    // Initialize GLAD
+    spdlog::info("Initializing GLAD...");
+    if (!gladLoadGL((GLADloadfunc)SDL_GL_GetProcAddress)) {
+        spdlog::error("Failed to initialize GLAD");
+        SDL_GL_DeleteContext(glContext);
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        return 1;
+    }
+    spdlog::info("GLAD initialized successfully");
     
-    // Create a test entity
-    auto testEntityId = entityManager.createEntity();
-    spdlog::info("Created test entity with ID: {}", testEntityId);
+    // Print OpenGL version info
+    spdlog::info("About to get OpenGL version...");
+    const char* version = reinterpret_cast<const char*>(glGetString(GL_VERSION));
+    spdlog::info("OpenGL version obtained");
     
-    // Main game loop
-    spdlog::info("Starting main game loop...");
+    spdlog::info("About to get OpenGL renderer...");
+    const char* renderer = reinterpret_cast<const char*>(glGetString(GL_RENDERER));
+    spdlog::info("OpenGL renderer obtained");
+    
+    spdlog::info("About to get OpenGL vendor...");
+    const char* vendor = reinterpret_cast<const char*>(glGetString(GL_VENDOR));
+    spdlog::info("OpenGL vendor obtained");
+    
+    spdlog::info("OpenGL Version: {}", version ? version : "Unknown");
+    spdlog::info("OpenGL Renderer: {}", renderer ? renderer : "Unknown");
+    spdlog::info("OpenGL Vendor: {}", vendor ? vendor : "Unknown");
+    
+    // Initialize GLAD (simplified for now)
+    spdlog::info("GLAD initialization skipped - using system OpenGL");
+    spdlog::info("GLAD initialized successfully");
+    
+    // Initialize the game engine
+    spdlog::info("Getting GameEngine singleton...");
+    spdlog::info("About to access Tempest namespace...");
+    spdlog::info("About to call getInstance()...");
+    auto& engine = Tempest::GameEngineSingleton::getInstance();
+    spdlog::info("GameEngine singleton obtained");
+    
+    // Pass the OpenGL context to the engine
+    spdlog::info("Setting OpenGL context...");
+    engine.setGLContext(glContext);
+    spdlog::info("OpenGL context set");
+    
+    spdlog::info("About to call engine.initialize()...");
+    if (!engine.initialize()) {
+        spdlog::error("Failed to initialize game engine");
+        SDL_GL_DeleteContext(glContext);
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        return 1;
+    }
+    
+    spdlog::info("Game engine initialized successfully");
+    
+    // Pass the window handle to the engine for buffer swapping
+    engine.setSDLWindow(window);
+    
+    // Run the main loop
     engine.run();
     
     // Cleanup
-    spdlog::info("Shutting down...");
-    engine.shutdown();
-    SDL_DestroyRenderer(renderer);
+    SDL_GL_DeleteContext(glContext);
     SDL_DestroyWindow(window);
     SDL_Quit();
-    
     spdlog::info("Tempest Rebuild Project terminated successfully");
     return 0;
 } 

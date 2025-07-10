@@ -34,8 +34,21 @@ public:
     
     // Movement
     float moveSpeed;           // Movement speed around tube
+    float acceleration;        // Movement acceleration
+    float deceleration;        // Movement deceleration when stopping
+    float maxSpeed;            // Maximum movement speed
+    float currentSpeed;        // Current movement speed
     bool isMoving;             // Currently moving
     int8_t moveDirection;      // -1 for left, 0 for none, 1 for right
+    float momentum;            // Movement momentum for smooth stops
+    
+    // Continuous position (floating point segment position)
+    float continuousSegment;   // Continuous segment position (0.0-16.0)
+    bool allowContinuousMovement; // Allow movement while already moving
+    
+    // Movement smoothing
+    float smoothingFactor;     // Movement smoothing factor (0.0-1.0)
+    float lastFramePosition;   // Last frame's position for smooth interpolation
     
     // Input state
     bool zapPressed;           // Zap button pressed
@@ -45,7 +58,10 @@ public:
     PlayerComponent() : segment(0), targetSegment(0), segmentLerp(0.0f),
                        lives(3), isAlive(true), isInvulnerable(false), invulnerabilityTimer(0.0f),
                        zapEnergy(255), fireEnergy(255), superZapperUses(2), weaponCooldown(0.0f),
-                       moveSpeed(5.0f), isMoving(false), moveDirection(0),
+                       moveSpeed(5.0f), acceleration(15.0f), deceleration(20.0f), maxSpeed(8.0f), currentSpeed(0.0f),
+                       isMoving(false), moveDirection(0), momentum(0.0f),
+                       continuousSegment(0.0f), allowContinuousMovement(true),
+                       smoothingFactor(0.8f), lastFramePosition(0.0f),
                        zapPressed(false), firePressed(false), superZapperPressed(false) {}
     
     ComponentTypeID getTypeId() const override { return 1; }
@@ -117,7 +133,15 @@ public:
     bool isAlive() const { return component_.isAlive; }
     uint8_t getLives() const { return component_.lives; }
     uint8_t getSegment() const { return component_.segment; }
+    float getContinuousSegment() const { return component_.continuousSegment; }
     bool isInvulnerable() const { return component_.isInvulnerable; }
+    bool isMoving() const { return component_.isMoving; }
+    int8_t getMoveDirection() const { return component_.moveDirection; }
+    
+    // Position queries
+    glm::vec3 getPosition() const;
+    glm::vec3 getPosition(float depth) const;
+    float getSegmentAngle() const;
     
     // Weapon queries
     uint8_t getZapEnergy() const { return component_.zapEnergy; }

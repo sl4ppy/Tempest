@@ -38,40 +38,28 @@ TEST_F(PlayerTest, PlayerMovement) {
     PlayerInputEvent moveRightEvent(PlayerInputEvent::InputType::MoveRight, true);
     player_.handleInput(moveRightEvent);
     
-    EXPECT_EQ(component.targetSegment, 1);
-    EXPECT_TRUE(component.isMoving);
-    EXPECT_EQ(component.moveDirection, 1);
+    EXPECT_EQ(component.moveDirection, 1); // Should set direction to right
     
-    // Test that new input is ignored while moving (no queuing)
+    // Test that continuous movement allows changing direction
     PlayerInputEvent moveLeftEvent(PlayerInputEvent::InputType::MoveLeft, true);
     player_.handleInput(moveLeftEvent);
     
-    // Should still be moving to the right, not queued to move left
-    EXPECT_EQ(component.targetSegment, 1);
-    EXPECT_TRUE(component.isMoving);
+    EXPECT_EQ(component.moveDirection, -1); // Should change direction to left
+    
+    // Test stopping movement
+    PlayerInputEvent moveLeftStopEvent(PlayerInputEvent::InputType::MoveLeft, false);
+    player_.handleInput(moveLeftStopEvent);
+    
+    EXPECT_EQ(component.moveDirection, 0); // Should stop movement
+    
+    // Test that movement direction is maintained with continuous input
+    player_.handleInput(moveRightEvent);
     EXPECT_EQ(component.moveDirection, 1);
     
-    // Complete the movement first
-    component.isMoving = false;
-    component.segmentLerp = 1.0f;
-    component.segment = 1;
-    
-    // Now test left movement from segment 1
-    player_.handleInput(moveLeftEvent);
-    
-    EXPECT_EQ(component.targetSegment, 0); // Should move from 1 to 0
-    EXPECT_TRUE(component.isMoving);
-    EXPECT_EQ(component.moveDirection, -1);
-    
-    // Complete the movement to segment 0
-    component.isMoving = false;
-    component.segmentLerp = 1.0f;
-    component.segment = 0; // Ensure we are at segment 0
-    // Now test left movement from segment 0 (should wrap to 15)
-    player_.handleInput(moveLeftEvent);
-    EXPECT_EQ(component.targetSegment, 15); // Wrap from 0 to 15
-    EXPECT_TRUE(component.isMoving);
-    EXPECT_EQ(component.moveDirection, -1);
+    // Test that releasing right key stops movement
+    PlayerInputEvent moveRightStopEvent(PlayerInputEvent::InputType::MoveRight, false);
+    player_.handleInput(moveRightStopEvent);
+    EXPECT_EQ(component.moveDirection, 0);
 }
 
 TEST_F(PlayerTest, PlayerWeapons) {
@@ -214,41 +202,53 @@ TEST_F(PlayerTest, TubeGeometryUtilityFunctions) {
 TEST_F(PlayerTest, PlayerUpdate) {
     auto& component = player_.getComponent();
     
-    // Ensure player is alive and has proper movement speed
+    // Ensure player is alive and has proper movement parameters
     component.isAlive = true;
-    component.moveSpeed = 5.0f;
+    component.maxSpeed = 8.0f;
+    component.acceleration = 15.0f;
+    component.deceleration = 20.0f;
+    component.continuousSegment = 0.0f;
     
-    // Set up movement: segment != targetSegment
-    component.segment = 0;
-    component.targetSegment = 1;
-    component.isMoving = true;
-    component.segmentLerp = 0.5f;
+    // Test movement acceleration
+    component.moveDirection = 1; // Moving right
+    component.currentSpeed = 0.0f;
+    component.momentum = 0.0f;
     
-    // Debug output
-    spdlog::debug("Before update: segment={}, targetSegment={}, isMoving={}, segmentLerp={}, moveSpeed={}", 
-                  component.segment, component.targetSegment, component.isMoving, component.segmentLerp, component.moveSpeed);
-    
-    // Update player with smaller deltaTime so movement doesn't complete
-    player_.update(0.05f); // Use 0.05 instead of 0.1
-    
-    // Debug output
-    spdlog::debug("After update: segment={}, targetSegment={}, isMoving={}, segmentLerp={}", 
-                  component.segment, component.targetSegment, component.isMoving, component.segmentLerp);
-    
-    // Check that movement progressed (0.5 + 5.0 * 0.05 = 0.75)
-    EXPECT_GT(component.segmentLerp, 0.5f);
-
-    // Test update does not progress movement if not moving
-    component.isMoving = false;
-    component.segmentLerp = 0.0f;
+    float initialSegment = component.continuousSegment;
     player_.update(0.1f);
-    EXPECT_EQ(component.segmentLerp, 0.0f);
+    
+    // Check that speed increased
+    EXPECT_GT(component.currentSpeed, 0.0f);
+    // Check that position changed
+    EXPECT_GT(component.continuousSegment, initialSegment);
+    EXPECT_TRUE(component.isMoving);
 
-    // Test update does not progress movement if segment == targetSegment
-    component.isMoving = true;
-    component.segment = 2;
-    component.targetSegment = 2;
-    component.segmentLerp = 0.3f;
+    // Test deceleration when no input
+    component.moveDirection = 0; // No movement input
+    float currentSpeed = component.currentSpeed;
+    float currentMomentum = component.momentum;
+    
     player_.update(0.1f);
-    EXPECT_EQ(component.segmentLerp, 0.3f);
+    
+    // Check that speed/momentum decreased
+    EXPECT_LT(component.currentSpeed, currentSpeed);
+    EXPECT_LT(std::abs(component.momentum), std::abs(currentMomentum));
+
+    // Test wrapping around tube (16 segments)
+    component.continuousSegment = 15.9f;
+    component.moveDirection = 1;
+    component.currentSpeed = 4.0f;
+    component.momentum = 4.0f;
+    
+    player_.update(0.1f);
+    
+    // Should wrap around to beginning
+    EXPECT_LT(component.continuousSegment, 1.0f);
+    EXPECT_EQ(component.segment, 0);
+    
+    // Test that dead player doesn't move
+    component.isAlive = false;
+    float deadSegment = component.continuousSegment;
+    player_.update(0.1f);
+    EXPECT_EQ(component.continuousSegment, deadSegment);
 } 

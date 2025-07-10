@@ -21,6 +21,9 @@ protected:
 TEST_F(GameEngineTest, EngineInitialization) {
     auto& engine = GameEngineSingleton::getInstance();
     
+    // Set graphics API to Mock for testing
+    engine.setGraphicsAPI("Mock");
+    
     EXPECT_TRUE(engine.initialize());
     EXPECT_EQ(engine.getEntityCount(), 0);
     EXPECT_EQ(engine.getFPS(), 0.0f);
@@ -31,6 +34,7 @@ TEST_F(GameEngineTest, EngineInitialization) {
 
 TEST_F(GameEngineTest, EntityManagerBasicOperations) {
     auto& engine = GameEngineSingleton::getInstance();
+    engine.setGraphicsAPI("Mock");
     engine.initialize();
     
     auto& entityManager = engine.getEntityManager();
@@ -68,6 +72,7 @@ TEST_F(GameEngineTest, EntityManagerBasicOperations) {
 
 TEST_F(GameEngineTest, GameStateManagerBasicOperations) {
     auto& engine = GameEngineSingleton::getInstance();
+    engine.setGraphicsAPI("Mock");
     engine.initialize();
     
     auto& gameStateManager = engine.getGameStateManager();
@@ -93,6 +98,7 @@ TEST_F(GameEngineTest, GameStateManagerBasicOperations) {
 
 TEST_F(GameEngineTest, EventSystemBasicOperations) {
     auto& engine = GameEngineSingleton::getInstance();
+    engine.setGraphicsAPI("Mock");
     engine.initialize();
     
     auto& eventSystem = engine.getEventSystem();
@@ -127,6 +133,7 @@ TEST_F(GameEngineTest, EventSystemBasicOperations) {
 
 TEST_F(GameEngineTest, GameStateDataOperations) {
     auto& engine = GameEngineSingleton::getInstance();
+    engine.setGraphicsAPI("Mock");
     engine.initialize();
     
     auto& gameState = engine.getGameState();
@@ -158,6 +165,7 @@ TEST_F(GameEngineTest, GameStateDataOperations) {
 
 TEST_F(GameEngineTest, EngineConfiguration) {
     auto& engine = GameEngineSingleton::getInstance();
+    engine.setGraphicsAPI("Mock");
     engine.initialize();
     
     // Test engine configuration

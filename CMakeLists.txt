@@ -23,11 +23,15 @@ find_package(glm CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
 
+# Find OpenGL
+find_package(OpenGL REQUIRED)
+
 # Include directories
 include_directories(${CMAKE_SOURCE_DIR}/src)
 include_directories(${CMAKE_SOURCE_DIR}/src/Core)
 include_directories(${CMAKE_SOURCE_DIR}/src/Game)
 include_directories(${CMAKE_SOURCE_DIR}/src/Graphics)
+include_directories(${CMAKE_SOURCE_DIR}/src/Graphics/glad)
 include_directories(${CMAKE_SOURCE_DIR}/src/Audio)
 include_directories(${CMAKE_SOURCE_DIR}/src/Input)
 include_directories(${CMAKE_SOURCE_DIR}/src/Platform)
@@ -51,10 +55,20 @@ add_executable(TempestRebuild
     src/Game/Level.cpp
     src/Game/LevelManager.cpp
     src/Game/ScoreManager.cpp
+    src/Graphics/GraphicsAPI.cpp
+    src/Graphics/OpenGLAPI.cpp
+    src/Graphics/MockGraphicsAPI.cpp
     src/Graphics/Renderer.cpp
     src/Graphics/Shader.cpp
+    src/Graphics/ShaderManager.cpp
+    src/Graphics/Camera.cpp
+    src/Graphics/Mesh.cpp
     src/Graphics/Texture.cpp
     src/Graphics/Sprite.cpp
+    src/Graphics/TubeRenderer.cpp
+    src/Graphics/VectorCommand.cpp
+    src/Graphics/TempestShapes.cpp
+    src/Graphics/gl.cpp
     src/Audio/AudioManager.cpp
     src/Audio/SoundEffect.cpp
     src/Audio/Music.cpp
@@ -64,6 +78,9 @@ add_executable(TempestRebuild
     src/Platform/PlatformManager.cpp
     src/Platform/Windows/WindowsPlatform.cpp
 )
+
+# Define USE_SDL for main build
+target_compile_definitions(TempestRebuild PRIVATE USE_SDL)
 
 # Link libraries
 target_link_libraries(TempestRebuild
@@ -75,6 +92,7 @@ target_link_libraries(TempestRebuild
     glm::glm
     nlohmann_json::nlohmann_json
     spdlog::spdlog
+    OpenGL::GL
 )
 
 # Set compiler-specific flags
@@ -102,6 +120,7 @@ add_executable(TempestTests
     tests/unit/TestProjectile.cpp
     tests/unit/TestLevelManager.cpp
     tests/unit/TestScoreManager.cpp
+    tests/unit/TestTubeRenderer.cpp
     src/Core/GameEngine.cpp
     src/Core/EntityManager.cpp
     src/Core/EventSystem.cpp
@@ -115,6 +134,27 @@ add_executable(TempestTests
     src/Game/Level.cpp
     src/Game/LevelManager.cpp
     src/Game/ScoreManager.cpp
+    src/Graphics/GraphicsAPI.cpp
+    src/Graphics/OpenGLAPI.cpp
+    src/Graphics/MockGraphicsAPI.cpp
+    src/Graphics/Renderer.cpp
+    src/Graphics/Shader.cpp
+    src/Graphics/ShaderManager.cpp
+    src/Graphics/Camera.cpp
+    src/Graphics/Mesh.cpp
+    src/Graphics/Texture.cpp
+    src/Graphics/Sprite.cpp
+    src/Graphics/TubeRenderer.cpp
+    src/Graphics/VectorCommand.cpp
+    src/Graphics/gl.cpp
+    src/Audio/AudioManager.cpp
+    src/Audio/SoundEffect.cpp
+    src/Audio/Music.cpp
+    src/Input/InputManager.cpp
+    src/Input/Keyboard.cpp
+    src/Input/Mouse.cpp
+    src/Platform/PlatformManager.cpp
+    src/Platform/Windows/WindowsPlatform.cpp
 )
 
 target_link_libraries(TempestTests
@@ -124,6 +164,8 @@ target_link_libraries(TempestTests
     GTest::gmock
     GTest::gmock_main
     spdlog::spdlog
+    OpenGL::GL
+    glfw
 )
 
 # Add tests

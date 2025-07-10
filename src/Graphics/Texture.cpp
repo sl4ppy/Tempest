@@ -1,21 +1,27 @@
 #include "Texture.h"
+#include <spdlog/spdlog.h>
 
 namespace Tempest {
 
-Texture::Texture() {
-    // TODO: Implement Texture constructor
+Texture::Texture() : m_id(0), m_width(0), m_height(0) {
 }
 
 Texture::~Texture() {
-    // TODO: Implement Texture destructor
+    // TODO: Implement texture cleanup when real OpenGL is integrated
 }
 
-void Texture::load() {
-    // TODO: Implement texture loading
+bool Texture::LoadFromFile(const std::string& filePath) {
+    // TODO: Implement texture loading from file
+    spdlog::warn("Texture::LoadFromFile not yet implemented");
+    return false;
 }
 
-void Texture::bind() {
-    // TODO: Implement texture binding
+bool Texture::Create(uint32_t width, uint32_t height, const void* data) {
+    // TODO: Implement texture creation
+    spdlog::warn("Texture::Create not yet implemented");
+    m_width = width;
+    m_height = height;
+    return false;
 }
 
 } // namespace Tempest 

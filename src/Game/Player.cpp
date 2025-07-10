@@ -1,6 +1,8 @@
 #include "Player.h"
+#include "TubeGeometry.h"
 #include <spdlog/spdlog.h>
 #include <algorithm>
+#include <cmath>
 
 namespace Tempest {
 
@@ -8,16 +10,46 @@ namespace Tempest {
 void PlayerMovementSystem::update(PlayerComponent& player, float deltaTime) {
     if (!player.isAlive) return;
     
-    // Handle movement between segments
-    if (player.isMoving && player.segment != player.targetSegment) {
-        player.segmentLerp += player.moveSpeed * deltaTime;
-        
-        if (player.segmentLerp >= 1.0f) {
-            player.segment = player.targetSegment;
-            player.segmentLerp = 0.0f;
-            player.isMoving = false;
+    // Store last frame position for smooth interpolation
+    player.lastFramePosition = player.continuousSegment;
+    
+    // Handle continuous movement
+    if (player.moveDirection != 0) {
+        // Accelerate in the direction of movement
+        player.currentSpeed = std::min(player.maxSpeed, player.currentSpeed + player.acceleration * deltaTime);
+        player.momentum = player.currentSpeed * player.moveDirection;
+    } else {
+        // Decelerate when not moving
+        float deceleration = player.deceleration * deltaTime;
+        if (std::abs(player.momentum) > deceleration) {
+            player.momentum -= std::copysign(deceleration, player.momentum);
+        } else {
+            player.momentum = 0.0f;
+            player.currentSpeed = 0.0f;
         }
     }
+    
+    // Apply momentum to continuous segment position
+    if (std::abs(player.momentum) > 0.001f) {
+        player.continuousSegment += player.momentum * deltaTime;
+        
+        // Wrap around the tube (0-16 segments)
+        if (player.continuousSegment < 0.0f) {
+            player.continuousSegment += NUM_SEGMENTS;
+        } else if (player.continuousSegment >= NUM_SEGMENTS) {
+            player.continuousSegment -= NUM_SEGMENTS;
+        }
+        
+        player.isMoving = true;
+    } else {
+        player.isMoving = false;
+    }
+    
+    // Update discrete segment position (for collision detection)
+    player.segment = static_cast<uint8_t>(player.continuousSegment) % NUM_SEGMENTS;
+    
+    // Calculate interpolation factor within current segment
+    player.segmentLerp = player.continuousSegment - std::floor(player.continuousSegment);
     
     // Update invulnerability timer
     if (player.isInvulnerable) {
@@ -34,18 +66,22 @@ void PlayerMovementSystem::handleInput(PlayerComponent& player, const PlayerInpu
     
     switch (event.inputType) {
         case PlayerInputEvent::InputType::MoveLeft:
-            if (event.pressed && !player.isMoving) {
-                player.targetSegment = (player.segment - 1 + NUM_SEGMENTS) % NUM_SEGMENTS;
-                player.isMoving = true;
+            if (event.pressed) {
                 player.moveDirection = -1;
+                spdlog::debug("Player started moving left");
+            } else if (player.moveDirection == -1) {
+                player.moveDirection = 0;
+                spdlog::debug("Player stopped moving left");
             }
             break;
             
         case PlayerInputEvent::InputType::MoveRight:
-            if (event.pressed && !player.isMoving) {
-                player.targetSegment = (player.segment + 1) % NUM_SEGMENTS;
-                player.isMoving = true;
+            if (event.pressed) {
                 player.moveDirection = 1;
+                spdlog::debug("Player started moving right");
+            } else if (player.moveDirection == 1) {
+                player.moveDirection = 0;
+                spdlog::debug("Player stopped moving right");
             }
             break;
     }
@@ -126,16 +162,24 @@ void PlayerCollisionSystem::update(PlayerComponent& player, float deltaTime) {
 }
 
 bool PlayerCollisionSystem::checkCollision(const PlayerComponent& player, const glm::vec3& enemyPosition) {
-    // Simple distance-based collision detection
-    // In a real implementation, this would use proper 3D collision detection
-    // For now, we'll use a simplified approach
+    // Enhanced collision detection using continuous segment position
     
-    // Calculate player position in 3D space
-    float angle = (player.segment / 16.0f) * 2.0f * 3.14159f;
-    glm::vec3 playerPos(cos(angle), 0.0f, sin(angle));
+    // Calculate player position in 3D space using continuous segment
+    float angle = (player.continuousSegment / 16.0f) * 2.0f * 3.14159f;
+    glm::vec3 playerPos(cos(angle) * PLAYER_RADIUS, 0.0f, sin(angle) * PLAYER_RADIUS);
     
+    // Calculate distance between player and enemy
     float distance = glm::length(enemyPosition - playerPos);
-    return distance < COLLISION_THRESHOLD;
+    
+    // Check if collision occurs
+    bool collision = distance < COLLISION_THRESHOLD;
+    
+    if (collision) {
+        spdlog::debug("Player collision detected at segment {:.2f}, distance: {:.3f}", 
+                     player.continuousSegment, distance);
+    }
+    
+    return collision;
 }
 
 // Player class implementation
@@ -199,10 +243,39 @@ void Player::respawn() {
         component_.zapEnergy = 255;
         component_.fireEnergy = 255;
         
+        // Reset movement state
+        component_.moveDirection = 0;
+        component_.currentSpeed = 0.0f;
+        component_.momentum = 0.0f;
+        component_.isMoving = false;
+        
         onPlayerRespawn();
         
         spdlog::info("Player respawned at segment {}", component_.segment);
     }
+}
+
+glm::vec3 Player::getPosition() const {
+    return getPosition(TubeGeometry::DEPTH_NEAR);
+}
+
+glm::vec3 Player::getPosition(float depth) const {
+    float angle = getSegmentAngle();
+    float radius = TubeGeometry::TUBE_RADIUS;
+    
+    // Apply depth scaling for perspective
+    float scale = 1.0f - (depth / TubeGeometry::TUBE_DEPTH) * 0.5f;
+    radius *= scale;
+    
+    return glm::vec3(
+        cos(angle) * radius,
+        -depth,  // Negative Y for depth into screen
+        sin(angle) * radius
+    );
+}
+
+float Player::getSegmentAngle() const {
+    return (component_.continuousSegment / PlayerMovementSystem::NUM_SEGMENTS) * 2.0f * 3.14159f;
 }
 
 void Player::onPlayerDeath() {
